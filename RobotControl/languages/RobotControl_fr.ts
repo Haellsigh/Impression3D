@@ -6,7 +6,6 @@
     <message>
         <location filename="../mainwindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translatorcomment>Fenetre principale</translatorcomment>
         <translation>Fenetre principale</translation>
     </message>
     <message>

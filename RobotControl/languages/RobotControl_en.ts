@@ -6,24 +6,23 @@
     <message>
         <location filename="../mainwindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translatorcomment>Main Window</translatorcomment>
-        <translation>Main Window</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="25"/>
         <location filename="../mainwindow.ui" line="51"/>
         <source>Robot status</source>
-        <translation>Robot status</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="31"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="38"/>
         <source>None</source>
-        <translation>None</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="57"/>

@@ -14,16 +14,14 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
     createLanguageMenu();
 
-    // Connecte la réponse
-    connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
-    connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
+    initConnections();
 
-    // Envoie la requete
+    // Send the first request
     m_station.StatusInformationRead();
 
+    // Periodic requests
     m_timer.setSingleShot(false);
     m_timer.start(50);
-
     connect(&m_timer, &QTimer::timeout, &m_station, &HSE::Client::StatusInformationRead);
 }
 
@@ -35,9 +33,9 @@ MainWindow::~MainWindow()
 void MainWindow::requeteStatus(HSE::RequestStatus status)
 {
     if (status.Status == 0x00) {
-        ui->lVErrorGlobal->setText("Aucune");
+        ui->lVErrorGlobal->setText(tr("No error"));
     } else {
-        ui->lVErrorGlobal->setText("Erreur!");
+        ui->lVErrorGlobal->setText(tr("Error: code %1").arg(status.Status, 0, 16));
     }
 }
 
@@ -61,6 +59,13 @@ void MainWindow::StatusInformationReceived(HSE::StatusInformation info)
     ui->lVRunning->setText(boolToString(info.Running()));
     ui->lVStep->setText(boolToString(info.Step()));
     ui->lVTeach->setText(boolToString(info.Teach()));
+}
+
+void MainWindow::initConnections()
+{
+    // Connect request status response
+    connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
+    connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
 }
 
 void MainWindow::changeEvent(QEvent* event)

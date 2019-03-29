@@ -24,6 +24,7 @@ private slots:
     void StatusInformationReceived(HSE::StatusInformation info);
 
 private:
+    void initConnections();
     Ui::MainWindow* ui;
 
     HSE::Client m_station;
