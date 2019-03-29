@@ -28,12 +28,12 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         robot/hseclient.cpp \
-		robot/hsestructures.cpp
+        robot/hsestructures.cpp
 
 HEADERS += \
-        mainwindow.h \
         robot/hseclient.h \
-        robot/hsestructures.h
+        robot/hsestructures.h \
+        mainwindow.h
 
 FORMS += \
         mainwindow.ui
