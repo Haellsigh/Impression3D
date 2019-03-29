@@ -17,22 +17,25 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
-      <widget class="QWidget" name="tabRobotState">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabRobotStatus">
        <attribute name="title">
-        <string>Etat du robot</string>
+        <string>Robot status</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <widget class="QLabel" name="lKErrorGlobal">
           <property name="text">
-           <string>Erreur:</string>
+           <string>Error:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
          <widget class="QLabel" name="lVErrorGlobal">
           <property name="text">
-           <string>Aucune</string>
+           <string>None</string>
           </property>
          </widget>
         </item>
@@ -45,13 +48,13 @@
            </size>
           </property>
           <property name="title">
-           <string>Status du robot</string>
+           <string>Robot status</string>
           </property>
           <layout class="QGridLayout" name="layoutStatusRobot" columnstretch="0,1">
            <item row="9" column="0">
             <widget class="QLabel" name="lKHoldExt">
              <property name="text">
-              <string>En pause externe</string>
+              <string>In hold by external</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -81,7 +84,7 @@
            <item row="5" column="0">
             <widget class="QLabel" name="lKError">
              <property name="text">
-              <string>Erreur</string>
+              <string>Error</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -111,7 +114,7 @@
            <item row="8" column="0">
             <widget class="QLabel" name="lKHoldCmd">
              <property name="text">
-              <string>En pause par commande</string>
+              <string>In hold by command</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -131,7 +134,7 @@
            <item row="7" column="0">
             <widget class="QLabel" name="lKHoldPP">
              <property name="text">
-              <string>En pause par PP</string>
+              <string>In hold by PP</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -141,7 +144,7 @@
            <item row="11" column="0">
             <widget class="QLabel" name="lKRunning">
              <property name="text">
-              <string>En marche</string>
+              <string>Running</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -161,7 +164,7 @@
            <item row="10" column="0">
             <widget class="QLabel" name="lKPlay">
              <property name="text">
-              <string>En play</string>
+              <string>Play</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -171,7 +174,7 @@
            <item row="12" column="0">
             <widget class="QLabel" name="lKStep">
              <property name="text">
-              <string>En step</string>
+              <string>Step</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -181,7 +184,7 @@
            <item row="13" column="0">
             <widget class="QLabel" name="lKTeach">
              <property name="text">
-              <string>En teach</string>
+              <string>Teach</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -318,7 +321,12 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionLanguage"/>
+    <widget class="QMenu" name="menuLanguage">
+     <property name="title">
+      <string>Language</string>
+     </property>
+    </widget>
+    <addaction name="menuLanguage"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>

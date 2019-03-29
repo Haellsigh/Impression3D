@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QTranslator>
 
 #include "robot/hseclient.h"
 
@@ -28,6 +29,21 @@ private:
     HSE::Client m_station;
 
     QTimer m_timer;
+
+    // Traductions
+protected:
+    void changeEvent(QEvent* event);
+protected slots:
+    void slotLanguageChanged(QAction* action);
+
+private:
+    void loadLanguage(const QString& rLanguage);
+    void createLanguageMenu();
+
+    QTranslator m_translator;
+    QTranslator m_translatorQt;
+    QString m_currentLang;
+    QString m_langPath;
 };
 
 #endif // MAINWINDOW_H

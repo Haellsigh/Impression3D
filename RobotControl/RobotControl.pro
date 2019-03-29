@@ -42,3 +42,7 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+# Translations
+TRANSLATIONS += languages/RobotControl_en.ts \
+                languages/RobotControl_fr.ts
