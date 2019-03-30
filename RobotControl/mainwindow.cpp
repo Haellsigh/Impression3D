@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QNetworkDatagram>
 
@@ -12,9 +11,18 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    m_lVRobotStatus = new QLabel(this);
+    m_lVRobotStatus->setMargin(5);
+    ui->statusbar->addPermanentWidget(m_lVRobotStatus);
+    updateRobotStatus(false);
+
+    setupLogging();
+
     createLanguageMenu();
 
     initConnections();
+
+    m_reader.decodeFile("test.gcode");
 
     // Send the first request
     m_station.StatusInformationRead();
@@ -30,13 +38,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::initConnections()
+{
+    // Request status response
+    connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
+    connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
+
+    // Close the log window when the mainwindow is closed
+    //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
+}
+
 void MainWindow::requeteStatus(HSE::RequestStatus status)
 {
-    if (status.Status == 0x00) {
-        ui->lVErrorGlobal->setText(tr("No error"));
-    } else {
-        ui->lVErrorGlobal->setText(tr("Error: code %1").arg(status.Status, 0, 16));
-    }
+    updateRobotStatus(status.Status == 0x00, status.Status);
 }
 
 void MainWindow::StatusInformationReceived(HSE::StatusInformation info)
@@ -61,11 +75,23 @@ void MainWindow::StatusInformationReceived(HSE::StatusInformation info)
     ui->lVTeach->setText(boolToString(info.Teach()));
 }
 
-void MainWindow::initConnections()
+void MainWindow::updateRobotStatus(bool error, int code)
 {
-    // Connect request status response
-    connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
-    connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
+    QString robotStatus;
+
+    if (error) {
+        if (code == 0) {
+            robotStatus = tr("Error");
+        } else {
+            robotStatus = tr("Error: code %1").arg(code);
+        }
+        m_lVRobotStatus->setStyleSheet("background-color: rgb(200, 0, 0);");
+    } else {
+        robotStatus = tr("No error");
+        m_lVRobotStatus->setStyleSheet("background-color: rgb(0, 200, 0);");
+    }
+
+    m_lVRobotStatus->setText(robotStatus);
 }
 
 void MainWindow::changeEvent(QEvent* event)
@@ -83,6 +109,8 @@ void MainWindow::changeEvent(QEvent* event)
         locale.truncate(locale.lastIndexOf('_'));
         loadLanguage(locale);
     } break;
+    default:
+        break;
     }
 
     // Pass event
@@ -139,7 +167,7 @@ void MainWindow::createLanguageMenu()
     QStringList fileNames = dir.entryList(QStringList("RobotControl_*.qm"));
 
     for (int i = 0; i < fileNames.size(); i++) {
-        qDebug() << "Loading language" << fileNames.at(i);
+        qInfo().noquote() << tr("Loading language") << fileNames.at(i);
         QString locale;
         locale = fileNames.at(i);
         locale.truncate(locale.lastIndexOf('.'));
@@ -159,4 +187,20 @@ void MainWindow::createLanguageMenu()
             action->setChecked(true);
         }
     }
+}
+
+void MainWindow::setupLogging()
+{
+    if (!m_actionOpenLog)
+        m_actionOpenLog = new QAction("Logs", ui->menubar);
+    connect(m_actionOpenLog, &QAction::triggered, &m_logWidget, &LogWidget::show);
+    ui->menubar->addAction(m_actionOpenLog);
+
+    m_logWidget.setAsMessageHandler();
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    m_logWidget.close();
+    QMainWindow::closeEvent(event);
 }

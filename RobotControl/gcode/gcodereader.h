@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVector>
 
-#include "gcodecommands.h"
+#include "gcodestructures.h"
 
 namespace gcode {
 
@@ -24,6 +24,10 @@ signals:
 
 private:
     QStringList readFile(QString filepath);
+
+    // Parse methods
+private:
+    Command parseFields(QStringList fields);
 };
 
 } // namespace gcode

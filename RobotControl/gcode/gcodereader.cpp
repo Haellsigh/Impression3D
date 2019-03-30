@@ -8,7 +8,6 @@ namespace gcode {
 
 Reader::Reader()
 {
-    decodeFile("test.gcode");
 }
 
 QVector<Command> Reader::decodeFile(QString filepath)
@@ -20,10 +19,12 @@ QVector<Command> Reader::decodeFile(QString filepath)
     int i = 0;
 
     for (auto line : lines) {
+        // 10 lines limit for testing
         if (i > 10) {
             return commands;
         }
-        // Remove comments
+
+        // Process comments
         if (line.contains(';')) {
             // Remove the line if it begins with ;
             if (line.front() == ';') {
@@ -31,35 +32,16 @@ QVector<Command> Reader::decodeFile(QString filepath)
             }
             // Remove the commented part of the line
             else {
-                line = line.left(line.indexOf(';') + 1);
+                line.truncate(line.indexOf(';'));
             }
         }
 
-        qDebug() << line;
+        qDebug().noquote() << line;
 
         // Split at each whitespace group
         QStringList fields = line.split(QRegExp("\\s+"));
 
-        // Process each field
-        for (auto field : fields) {
-            switch (field.front().toUpper().toLatin1()) {
-            case 'G':
-                break;
-            case 'M':
-                break;
-
-            case 'F':
-                break;
-            case 'X':
-                break;
-            case 'Y':
-                break;
-            case 'Z':
-                break;
-            case 'E':
-                break;
-            }
-        }
+        commands.append(parseFields(fields));
 
         i++;
     }
@@ -72,7 +54,9 @@ QStringList Reader::readFile(QString filepath)
     QFile file(filepath);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning().noquote() << tr("Can't open file %1").arg(filepath);
         emit error(tr("Can't open file %1").arg(filepath));
+        return QStringList();
     }
 
     QStringList contents;
@@ -82,6 +66,41 @@ QStringList Reader::readFile(QString filepath)
     }
 
     return contents;
+}
+
+Command Reader::parseFields(QStringList fields)
+{
+    Command cmd;
+
+    for (auto field : fields) {
+        if (!field.isEmpty()) {
+            char command = field.front().toUpper().toLatin1();
+            QString data = field.mid(1);
+
+            qDebug().noquote() << "command:" << command;
+            qDebug().noquote() << "data:" << data;
+
+            switch (field.front().toUpper().toLatin1()) {
+            // Move
+            case 'G':
+                break;
+            case 'M':
+                break;
+            case 'F':
+                break;
+            case 'X':
+                break;
+            case 'Y':
+                break;
+            case 'Z':
+                break;
+            case 'E':
+                break;
+            }
+        }
+    }
+
+    return cmd;
 }
 
 } // namespace gcode

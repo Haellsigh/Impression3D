@@ -18,28 +18,30 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="tabRobotStatus">
        <attribute name="title">
         <string>Robot status</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lKErrorGlobal">
-          <property name="text">
-           <string>Error:</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="lVErrorGlobal">
-          <property name="text">
-           <string>None</string>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-         </widget>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox">
           <property name="minimumSize">
            <size>
@@ -291,6 +293,19 @@
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>

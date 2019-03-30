@@ -28,15 +28,21 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         robot/hseclient.cpp \
-        robot/hsestructures.cpp
+        robot/hsestructures.cpp \
+        gcode/gcodereader.cpp \
+    logwidget.cpp
 
 HEADERS += \
         robot/hseclient.h \
         robot/hsestructures.h \
-        mainwindow.h
+        mainwindow.h \
+        gcode/gcodereader.h \
+    gcode/gcodestructures.h \
+    logwidget.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    logwidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
