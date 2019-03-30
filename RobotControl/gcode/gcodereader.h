@@ -10,6 +10,8 @@ namespace gcode {
 
 /**
  * @brief The GCodeReader class opens .gcode files and decodes the commands
+ *
+ * @note Reference: https://reprap.org/wiki/G-code
  */
 class Reader : public QObject {
     Q_OBJECT

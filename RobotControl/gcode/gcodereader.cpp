@@ -81,7 +81,6 @@ Command Reader::parseFields(QStringList fields)
             qDebug().noquote() << "data:" << data;
 
             switch (field.front().toUpper().toLatin1()) {
-            // Move
             case 'G':
                 break;
             case 'M':
