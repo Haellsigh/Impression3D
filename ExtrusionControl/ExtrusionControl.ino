@@ -4,8 +4,6 @@
  * 
  */
 
-#include <Stepper.h>
-
 void setup()
 {
 }

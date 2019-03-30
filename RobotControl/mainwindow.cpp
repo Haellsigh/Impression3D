@@ -125,7 +125,6 @@ void MainWindow::loadLanguage(const QString& rLanguage)
 
 void MainWindow::createLanguageMenu()
 {
-    qDebug() << "createLanguageMenu";
     QActionGroup* langGroup = new QActionGroup(ui->menuLanguage);
     langGroup->setExclusive(true);
 
