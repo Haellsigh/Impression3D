@@ -6,6 +6,9 @@
 
 LogWidget* LogWidget::currentHandler = nullptr;
 
+// Get the default message handler at the beginning
+static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(0);
+
 LogWidget::LogWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::LogWidget)
@@ -30,7 +33,7 @@ void LogWidget::handleMessages(QtMsgType type, const QMessageLogContext& context
         currentHandler->handleMessagesImpl(type, context, msg);
 
     // Also send to default handler
-    (*qInstallMessageHandler(0))(type, context, msg);
+    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
 }
 
 void LogWidget::log(QString message, QtMsgType type)

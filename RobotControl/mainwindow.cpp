@@ -24,13 +24,11 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_reader.decodeFile("test.gcode");
 
+    // Request robot status at least once every 500ms
+    m_timerStatusRequest.setInterval(1000);
+    m_timerStatusRequest.start();
     // Send the first request
-    m_station.StatusInformationRead();
-
-    // Periodic requests
-    m_timer.setSingleShot(false);
-    m_timer.start(50);
-    connect(&m_timer, &QTimer::timeout, &m_station, &HSE::Client::StatusInformationRead);
+    m_station.statusInformationRead();
 }
 
 MainWindow::~MainWindow()
@@ -44,8 +42,8 @@ void MainWindow::initConnections()
     connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
     connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
 
-    // Close the log window when the mainwindow is closed
-    //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
+    // Send periodic requests
+    connect(&m_timerStatusRequest, &QTimer::timeout, &m_station, &HSE::Client::statusInformationRead);
 }
 
 void MainWindow::requeteStatus(HSE::RequestStatus status)
@@ -73,6 +71,11 @@ void MainWindow::StatusInformationReceived(HSE::StatusInformation info)
     ui->lVRunning->setText(boolToString(info.Running()));
     ui->lVStep->setText(boolToString(info.Step()));
     ui->lVTeach->setText(boolToString(info.Teach()));
+
+    // Update information as fast as possible
+    m_station.statusInformationRead();
+    // Reset the 500ms timer
+    m_timerStatusRequest.start();
 }
 
 void MainWindow::updateRobotStatus(bool error, int code)

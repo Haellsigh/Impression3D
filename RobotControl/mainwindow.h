@@ -37,7 +37,7 @@ private:
     HSE::Client m_station;
     gcode::Reader m_reader;
 
-    QTimer m_timer;
+    QTimer m_timerStatusRequest;
 
     // Traductions
 protected:
