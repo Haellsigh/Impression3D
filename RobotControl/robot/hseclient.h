@@ -9,22 +9,76 @@
 
 namespace HSE {
 
+/**
+ * @brief The Client class is the interface to the DX200 controller
+ * @warning Everything is asynchronous, meaning if you request some data it
+ * will arrive in the form of a signal later. Connect to the signal.
+ */
 class Client : public QObject {
     Q_OBJECT
 
 public:
     Client();
 
-    void SendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data = QByteArray());
+    void sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data = QByteArray());
 
-    // Liste des requètes possible
+    ///////////////////////////////////////////////////////////////////////////
+    // List of possible requests
 public slots:
-    void StatusInformationRead();
+    /**
+     * @brief Reads the status information data
+     */
+    void statusInformationRead();
 
-    // Liste des signaux pour récupérer des infos de requètes
+    /**
+     * @brief Reset Alarms on the robot
+     */
+    void resetAlarms();
+
+    /**
+     * @brief Cancel (reset) error on the robot
+     */
+    void cancelErrors();
+
+    /**
+     * @brief Activate or deactivate HLock on the robot
+     * @param lock Set to false to deactivate HLock on the robot
+     */
+    void hlock(bool lock = true);
+
+    /**
+     * @brief Hold or unhold the Servo
+     * @param hold Set to false to unhold the Servo
+     */
+    void hold(bool hold = true);
+
+    /**
+     * @brief Send a move instruction to the robot in cartesian coordinates
+     * @param type The type of movement
+     * @param movement Movement data
+     */
+    void moveCartesian(Movement::Type type, Movement::Cartesian movement);
+
+    /**
+     * @brief Send a move instruction to the robot in encoder pulses.
+     * @param type The type of movement
+     * @param movement Movement data
+     */
+    void movePulse(Movement::Type type, Movement::Pulse movement);
+
+    /**
+     * @brief Read the names of all axis in the selected ControlGroup
+     * @param controlGroup
+     * @param axisNames
+     */
+    //void readAxisConfigurationInformation(uint8_t controlGroup);
+
+    ///////////////////////////////////////////////////////////////////////////
+    // List of answers to requests
 signals:
     void getStatusInformationRead(StatusInformation info);
 
+    ///////////////////////////////////////////////////////////////////////////
 signals:
     void requestSent();
     void requestStatus(RequestStatus status);

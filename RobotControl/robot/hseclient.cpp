@@ -15,7 +15,7 @@ Client::Client()
     connect(&m_socket, &QUdpSocket::readyRead, this, &Client::readPendingDatagrams);
 }
 
-void Client::SendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
+void Client::sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
 {
     uint16_t dataLength = data.length();
     QByteArray framedData;
@@ -46,6 +46,8 @@ void Client::SendCommand(Command command_id, int16_t instance, uint8_t attribut,
     // ACK
     framedData[i++] = 0x00;
 
+    // Save the current request
+    m_requests[m_requestCount] = STATUS_INFORMATION_R;
     // Request ID
     framedData[i++] = m_requestCount++; // Increment by one for each request
 
@@ -91,10 +93,68 @@ void Client::SendCommand(Command command_id, int16_t instance, uint8_t attribut,
     m_socket.writeDatagram(framedData, m_ip, m_port);
 }
 
-void Client::StatusInformationRead()
+void Client::statusInformationRead()
 {
-    m_requests[m_requestCount] = STATUS_INFORMATION_R;
-    SendCommand(STATUS_INFORMATION_R, 0x01, 0x00, GET_ALL_ATTRIBUTES);
+    sendCommand(STATUS_INFORMATION_R, 0x01, 0x00, GET_ALL_ATTRIBUTES);
+}
+
+void Client::resetAlarms()
+{
+    QByteArray data(4, 0);
+    data[0] = 1;
+    sendCommand(ALARM_RESET, 0x01, 0x01, 0x10, data);
+}
+
+void Client::cancelErrors()
+{
+    QByteArray data(4, 0);
+    data[0] = 1;
+    sendCommand(ALARM_RESET, 0x02, 0x01, 0x10, data);
+}
+
+void Client::hlock(bool lock)
+{
+    // 1: HLock on, 2: HLock off
+    uint8_t toLock = lock ? 1 : 2;
+
+    QByteArray data(4, 0);
+    data[0] = toLock;
+
+    sendCommand(HOLD_OR_SERVO_ONOFF, 0x03, 0x01, 0x10, data);
+}
+
+void Client::hold(bool hold)
+{
+    // 1: Hold on, 2: Hold off
+    uint8_t toHold = hold ? 1 : 2;
+
+    QByteArray data(4, 0);
+    data[0] = toHold;
+
+    sendCommand(HOLD_OR_SERVO_ONOFF, 0x01, 0x01, 0x10, data);
+}
+
+void Client::moveCartesian(Movement::Type type, Movement::Cartesian movement)
+{
+    QByteArray data(26, 0);
+    int i     = 0;
+    data[i++] = movement.RobotNo;
+    data[i++] = movement.StationNo;
+    data[i++] = movement.Classification;
+    data[i++] = movement.Speed;
+    data[i++] = movement.Coordinate;
+    data[i++] = movement.X;
+    data[i++] = movement.Y;
+    data[i++] = movement.Z;
+    data[i++] = movement.Tx;
+    data[i++] = movement.Ty;
+    data[i++] = movement.Tz;
+
+    data[i++] = 0x00;
+}
+
+void Client::movePulse(Movement::Type type, Movement::Pulse movement)
+{
 }
 
 void Client::readPendingDatagrams()

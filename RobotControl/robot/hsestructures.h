@@ -34,7 +34,7 @@ enum Command : uint16_t {
     PLURAL_B_VARIABLE_RW             = 0x302,
     BYTE_VARIABLE                    = 0x7A,
     ALARM_RESET                      = 0x82,
-    HOLDOR_OR_SERVO_ONOFF            = 0x83,
+    HOLD_OR_SERVO_ONOFF              = 0x83,
     MOVE_CARTESIAN                   = 0x8A,
     MOVE_PULSE                       = 0x8B
 };
@@ -57,37 +57,47 @@ struct AlarmData {
     uint32_t Type    = 0;
 };
 
-//TODO: Verifier l'initialisation des std::array
-struct MoveDataCartesian {
-    std::array<int32_t, 3> BaseAxisPosition    = {};
-    int32_t Classification                     = 0;
-    int32_t Coordinate                         = 0;
-    uint32_t ExpandedType                      = 0;
-    int32_t RobotNo                            = 0;
-    int32_t Speed                              = 0;
-    std::array<int32_t, 6> StationAxisPosition = {};
-    int32_t StationNo                          = 0;
-    int32_t ToolNo                             = 0;
-    int32_t Tx                                 = 0;
-    int32_t Ty                                 = 0;
-    uint32_t Type                              = 0;
-    int32_t Tz                                 = 0;
-    int32_t UserCoordinateNo                   = 0;
-    int32_t X                                  = 0;
-    int32_t Y                                  = 0;
-    int32_t Z                                  = 0;
-};
+namespace Movement {
 
-struct MoveDataPulse {
-    std::array<int32_t, 3> BaseAxisPosition    = {};
-    int32_t Classification                     = 0;
-    std::array<int32_t, 8> RobotAxisPulseValue = {};
-    int32_t RobotNo                            = 0;
-    int32_t Speed                              = 0;
-    std::array<int32_t, 6> StationAxisPosition = {};
-    int32_t StationNo                          = 0;
-    int32_t ToolNo                             = 0;
-};
+    enum Type : uint8_t {
+        ABSOLUTE_JOINT      = 1,
+        ABSOLUTE_CARTESIAN  = 2,
+        INCREMENT_CARTESIAN = 3
+    };
+
+    //TODO: Verifier l'initialisation des std::array
+    struct Cartesian {
+        std::array<int32_t, 3> BaseAxisPosition    = {};
+        int32_t Classification                     = 0;
+        int32_t Coordinate                         = 0;
+        uint32_t ExpandedType                      = 0;
+        int32_t RobotNo                            = 0;
+        int32_t Speed                              = 0;
+        std::array<int32_t, 6> StationAxisPosition = {};
+        int32_t StationNo                          = 0;
+        int32_t ToolNo                             = 0;
+        int32_t Tx                                 = 0;
+        int32_t Ty                                 = 0;
+        uint32_t Type                              = 0;
+        int32_t Tz                                 = 0;
+        int32_t UserCoordinateNo                   = 0;
+        int32_t X                                  = 0;
+        int32_t Y                                  = 0;
+        int32_t Z                                  = 0;
+    };
+
+    struct Pulse {
+        std::array<int32_t, 3> BaseAxisPosition    = {};
+        int32_t Classification                     = 0;
+        std::array<int32_t, 8> RobotAxisPulseValue = {};
+        int32_t RobotNo                            = 0;
+        int32_t Speed                              = 0;
+        std::array<int32_t, 6> StationAxisPosition = {};
+        int32_t StationNo                          = 0;
+        int32_t ToolNo                             = 0;
+    };
+
+} // namespace Movement
 
 struct RequestStatus {
     uint8_t AddedStatusSize = 0;
