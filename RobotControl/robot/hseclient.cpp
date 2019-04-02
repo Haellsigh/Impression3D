@@ -224,7 +224,7 @@ void Client::processReceivedData(const uint8_t request_id, const QByteArray data
         break;
     case ALARM_RESET:
         break;
-    case HOLDOR_OR_SERVO_ONOFF:
+    case HOLD_OR_SERVO_ONOFF:
         break;
     case MOVE_CARTESIAN:
         break;
