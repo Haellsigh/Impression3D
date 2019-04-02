@@ -324,6 +324,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis1">
              <item>
               <widget class="QSlider" name="sliderAxis1">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -335,10 +341,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>
@@ -348,6 +354,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis3">
              <item>
               <widget class="QSlider" name="sliderAxis3">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -359,10 +371,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>
@@ -372,6 +384,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis6">
              <item>
               <widget class="QSlider" name="sliderAxis6">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -383,10 +401,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>
@@ -473,6 +491,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis2">
              <item>
               <widget class="QSlider" name="sliderAxis2">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -484,10 +508,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>
@@ -497,6 +521,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis4">
              <item>
               <widget class="QSlider" name="sliderAxis4">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -508,10 +538,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>
@@ -521,6 +551,12 @@
             <layout class="QHBoxLayout" name="layoutMvtAxis5">
              <item>
               <widget class="QSlider" name="sliderAxis5">
+               <property name="minimum">
+                <number>-1000000</number>
+               </property>
+               <property name="maximum">
+                <number>1000000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -532,10 +568,10 @@
                 <string> µm</string>
                </property>
                <property name="minimum">
-                <number>-999999999</number>
+                <number>-1000000</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>1000000</number>
                </property>
               </widget>
              </item>

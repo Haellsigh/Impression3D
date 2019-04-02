@@ -28,10 +28,7 @@ private slots:
     void updateRobotStatus(bool error, int code = 0);
 
     void slotCurrentPosSelected(int posType);
-
-    void on_radioCurPosPulse_clicked();
-    void on_radioCurPosBaseCart_clicked();
-    void on_radioCurPosUserBase_clicked();
+    void slotMovePosSelected(int posType);
 
 private:
     void initConnections();
