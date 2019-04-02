@@ -27,6 +27,12 @@ private slots:
     void StatusInformationReceived(HSE::StatusInformation info);
     void updateRobotStatus(bool error, int code = 0);
 
+    void slotCurrentPosSelected(int posType);
+
+    void on_radioCurPosPulse_clicked();
+    void on_radioCurPosBaseCart_clicked();
+    void on_radioCurPosUserBase_clicked();
+
 private:
     void initConnections();
     Ui::MainWindow* ui;

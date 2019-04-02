@@ -46,6 +46,16 @@ void MainWindow::initConnections()
 
     // Close the log window when the mainwindow is closed
     //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
+
+    connect(ui->radioCurPosPulse, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(1);
+    });
+    connect(ui->radioCurPosBaseCart, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(2);
+    });
+    connect(ui->radioCurPosUserCart, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(3);
+    });
 }
 
 void MainWindow::requeteStatus(HSE::RequestStatus status)
@@ -92,6 +102,11 @@ void MainWindow::updateRobotStatus(bool error, int code)
     }
 
     m_lVRobotStatus->setText(robotStatus);
+}
+
+void MainWindow::slotCurrentPosSelected(int posType)
+{
+    qDebug().noquote() << "Current selected position type:" << posType;
 }
 
 void MainWindow::changeEvent(QEvent* event)

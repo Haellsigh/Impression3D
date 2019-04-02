@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -27,7 +27,7 @@
        <attribute name="title">
         <string>Robot status</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1">
         <item row="0" column="1">
          <spacer name="horizontalSpacer">
           <property name="orientation">
@@ -313,38 +313,120 @@
        <attribute name="title">
         <string>Manual control</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,1">
         <item row="0" column="0">
-         <widget class="QGroupBox" name="groupBox_2">
+         <widget class="QGroupBox" name="grpManualMvt">
           <property name="title">
-           <string>GroupBox</string>
+           <string>Manual movements</string>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QGroupBox" name="grpCurrentPosition">
-          <property name="title">
-           <string>Current position</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="2" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis1">
              <item>
-              <widget class="QRadioButton" name="radioPositionPulse">
-               <property name="text">
-                <string>Pulse</string>
+              <widget class="QSlider" name="sliderAxis1">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioPositionBaseCartesian">
+              <widget class="QSpinBox" name="spinAxis1">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="6" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis3">
+             <item>
+              <widget class="QSlider" name="sliderAxis3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinAxis3">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="12" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis6">
+             <item>
+              <widget class="QSlider" name="sliderAxis6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinAxis6">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="13" column="0">
+            <widget class="QPushButton" name="bSendPosition">
+             <property name="text">
+              <string>Send position</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lKMvtAxis1">
+             <property name="text">
+              <string>Axis 1</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="layoutManMvt">
+             <item>
+              <widget class="QRadioButton" name="radioManMovPulse">
+               <property name="text">
+                <string>Pulse</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="radioManMovBaseCart">
                <property name="text">
                 <string>Base cartesian</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioPositionUserCartesian">
+              <widget class="QRadioButton" name="radioManMovUserCart">
                <property name="text">
                 <string>User cartesian</string>
                </property>
@@ -352,7 +434,308 @@
              </item>
             </layout>
            </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="lKMvtAxis5">
+             <property name="text">
+              <string>Axis 5</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="lKMvtAxis4">
+             <property name="text">
+              <string>Axis 4</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="lKMvtAxis3">
+             <property name="text">
+              <string>Axis 3</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="lKMvtAxis2">
+             <property name="text">
+              <string>Axis 2</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="lKMvtAxis6">
+             <property name="text">
+              <string>Axis 6</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis2">
+             <item>
+              <widget class="QSlider" name="sliderAxis2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinAxis2">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="8" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis4">
+             <item>
+              <widget class="QSlider" name="sliderAxis4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinAxis4">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="10" column="0">
+            <layout class="QHBoxLayout" name="layoutMvtAxis5">
+             <item>
+              <widget class="QSlider" name="sliderAxis5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinAxis5">
+               <property name="suffix">
+                <string> µm</string>
+               </property>
+               <property name="minimum">
+                <number>-999999999</number>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="14" column="0">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="grpCurrentPosition">
+          <property name="title">
+           <string>Current position</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
+           <item row="2" column="0">
+            <widget class="QLabel" name="lKAxis2">
+             <property name="text">
+              <string>Axis 2</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="lKAxis3">
+             <property name="text">
+              <string>Axis 3</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="lKAxis4">
+             <property name="text">
+              <string>Axis 4</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="0">
+            <widget class="QLabel" name="lKAxis1">
+             <property name="text">
+              <string>Axis 1</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="lVAxis1">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="lKAxis5">
+             <property name="text">
+              <string>Axis 5</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="lKAxis6">
+             <property name="text">
+              <string>Axis 6</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="lVAxis3">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLabel" name="lVAxis5">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="lVAxis2">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="lVAxis4">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLabel" name="lVAxis6">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="lKUnit1">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="3">
+            <layout class="QHBoxLayout" name="layoutCurPos">
+             <item>
+              <widget class="QRadioButton" name="radioCurPosPulse">
+               <property name="text">
+                <string>Pulse</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="radioCurPosBaseCart">
+               <property name="text">
+                <string>Base cartesian</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="radioCurPosUserCart">
+               <property name="text">
+                <string>User cartesian</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="lKUnit2">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLabel" name="lKUnit3">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLabel" name="lKUnit4">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="2">
+            <widget class="QLabel" name="lKUnit5">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="2">
+            <widget class="QLabel" name="lKUnit6">
+             <property name="text">
+              <string notr="true"> µm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" colspan="3">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -380,7 +763,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
