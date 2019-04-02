@@ -27,6 +27,9 @@ private slots:
     void StatusInformationReceived(HSE::StatusInformation info);
     void updateRobotStatus(bool error, int code = 0);
 
+    void slotCurrentPosSelected(int posType);
+    void slotMovePosSelected(int posType);
+
 private:
     void initConnections();
     Ui::MainWindow* ui;

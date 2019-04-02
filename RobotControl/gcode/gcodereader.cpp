@@ -18,7 +18,7 @@ QVector<Command> Reader::decodeFile(QString filepath)
 
     int i = 0;
 
-    for (auto line : lines) {
+    for (QString line : lines) {
         // 10 lines limit for testing
         if (i > 10) {
             return commands;
@@ -27,7 +27,7 @@ QVector<Command> Reader::decodeFile(QString filepath)
         // Process comments
         if (line.contains(';')) {
             // Remove the line if it begins with ;
-            if (line.front() == ';') {
+            if (line.at(0) == ';') {
                 continue;
             }
             // Remove the commented part of the line
@@ -74,13 +74,13 @@ Command Reader::parseFields(QStringList fields)
 
     for (auto field : fields) {
         if (!field.isEmpty()) {
-            char command = field.front().toUpper().toLatin1();
+            char command = field.at(0).toUpper().toLatin1();
             QString data = field.mid(1);
 
             qDebug().noquote() << "command:" << command;
             qDebug().noquote() << "data:" << data;
 
-            switch (field.front().toUpper().toLatin1()) {
+            switch (field.at(0).toUpper().toLatin1()) {
             case 'G':
                 break;
             case 'M':

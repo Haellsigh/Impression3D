@@ -44,6 +44,47 @@ void MainWindow::initConnections()
 
     // Send periodic requests
     connect(&m_timerStatusRequest, &QTimer::timeout, &m_station, &HSE::Client::statusInformationRead);
+
+    // Close the log window when the mainwindow is closed
+    //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
+
+    connect(ui->radioCurPosPulse, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(1);
+    });
+    connect(ui->radioCurPosBaseCart, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(2);
+    });
+    connect(ui->radioCurPosUserCart, &QRadioButton::clicked, [this]() {
+        slotCurrentPosSelected(3);
+    });
+
+    connect(ui->radioManMovPulse, &QRadioButton::clicked, [this]() {
+        slotMovePosSelected(1);
+    });
+    connect(ui->radioManMovBaseCart, &QRadioButton::clicked, [this]() {
+        slotMovePosSelected(2);
+    });
+    connect(ui->radioManMovUserCart, &QRadioButton::clicked, [this]() {
+        slotMovePosSelected(3);
+    });
+
+    // Connect spinAxisI to sliderAxisI
+    auto spinSignal = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
+
+    connect(ui->spinAxis1, spinSignal, ui->sliderAxis1, &QSlider::setValue);
+    connect(ui->spinAxis2, spinSignal, ui->sliderAxis2, &QSlider::setValue);
+    connect(ui->spinAxis3, spinSignal, ui->sliderAxis3, &QSlider::setValue);
+    connect(ui->spinAxis4, spinSignal, ui->sliderAxis4, &QSlider::setValue);
+    connect(ui->spinAxis5, spinSignal, ui->sliderAxis5, &QSlider::setValue);
+    connect(ui->spinAxis6, spinSignal, ui->sliderAxis6, &QSlider::setValue);
+
+    // Connect sliderAxisI to spinAxisI
+    connect(ui->sliderAxis1, &QSlider::valueChanged, ui->spinAxis1, &QSpinBox::setValue);
+    connect(ui->sliderAxis2, &QSlider::valueChanged, ui->spinAxis2, &QSpinBox::setValue);
+    connect(ui->sliderAxis3, &QSlider::valueChanged, ui->spinAxis3, &QSpinBox::setValue);
+    connect(ui->sliderAxis4, &QSlider::valueChanged, ui->spinAxis4, &QSpinBox::setValue);
+    connect(ui->sliderAxis5, &QSlider::valueChanged, ui->spinAxis5, &QSpinBox::setValue);
+    connect(ui->sliderAxis6, &QSlider::valueChanged, ui->spinAxis6, &QSpinBox::setValue);
 }
 
 void MainWindow::requeteStatus(HSE::RequestStatus status)
@@ -95,6 +136,16 @@ void MainWindow::updateRobotStatus(bool error, int code)
     }
 
     m_lVRobotStatus->setText(robotStatus);
+}
+
+void MainWindow::slotCurrentPosSelected(int posType)
+{
+    qDebug().noquote() << "Current selected position type:" << posType;
+}
+
+void MainWindow::slotMovePosSelected(int posType)
+{
+    qDebug().noquote() << "Movement selected position type:" << posType;
 }
 
 void MainWindow::changeEvent(QEvent* event)
