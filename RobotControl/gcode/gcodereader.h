@@ -1,6 +1,7 @@
 #ifndef GCODEREADER_H
 #define GCODEREADER_H
 
+#include <QMap>
 #include <QObject>
 #include <QVector>
 
@@ -19,7 +20,7 @@ class Reader : public QObject {
 public:
     Reader();
 
-    QVector<Command> decodeFile(QString filepath);
+    QVector<Block> decodeFile(QString filepath);
 
 signals:
     void error(QString errorMessage);
@@ -27,9 +28,13 @@ signals:
 private:
     QStringList readFile(QString filepath);
 
-    // Parse methods
+    // Parser
 private:
-    Command parseFields(QStringList fields);
+    Block parseFields(QStringList fields, int iLine);
+
+private:
+    QMap<char, int> m_cmdCounts;
+    int m_totals = 0;
 };
 
 } // namespace gcode

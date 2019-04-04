@@ -10,24 +10,19 @@ Reader::Reader()
 {
 }
 
-QVector<Command> Reader::decodeFile(QString filepath)
+QVector<Block> Reader::decodeFile(QString filepath)
 {
     auto lines = readFile(filepath);
 
-    QVector<Command> commands;
+    QVector<Block> blocks;
 
-    int i = 0;
-
+    int iLine = 1;
     for (QString line : lines) {
-        // 10 lines limit for testing
-        if (i > 10) {
-            return commands;
-        }
-
         // Process comments
         if (line.contains(';')) {
             // Remove the line if it begins with ;
-            if (line.at(0) == ';') {
+            if (line.at(0) == ';') { // Go to next line
+                iLine++;
                 continue;
             }
             // Remove the commented part of the line
@@ -36,17 +31,27 @@ QVector<Command> Reader::decodeFile(QString filepath)
             }
         }
 
-        qDebug().noquote() << line;
-
         // Split at each whitespace group
         QStringList fields = line.split(QRegExp("\\s+"));
 
-        commands.append(parseFields(fields));
+        auto block = parseFields(fields, iLine);
 
-        i++;
+        if (block.isValid)
+            blocks.append(block);
+
+        iLine++;
     }
 
-    return commands;
+    // Display some statistics
+    qDebug().noquote() << "G-Code fields statistics:";
+    auto it = m_cmdCounts.begin();
+    while (it != m_cmdCounts.end()) {
+        qDebug().noquote() << it.key()
+                           << ":" << 100. * it.value() / m_totals << "%";
+        it++;
+    }
+
+    return blocks;
 }
 
 QStringList Reader::readFile(QString filepath)
@@ -62,44 +67,74 @@ QStringList Reader::readFile(QString filepath)
     QStringList contents;
 
     while (!file.atEnd()) {
-        contents.append(file.readLine());
+        contents.append(file.readLine().trimmed());
     }
 
     return contents;
 }
 
-Command Reader::parseFields(QStringList fields)
+Block Reader::parseFields(QStringList fields, int iLine)
 {
-    Command cmd;
+    Block block;
 
+    int iField = 0;
     for (auto field : fields) {
         if (!field.isEmpty()) {
             char command = field.at(0).toUpper().toLatin1();
-            QString data = field.mid(1);
+            double data  = field.mid(1).toDouble();
 
-            qDebug().noquote() << "command:" << command;
-            qDebug().noquote() << "data:" << data;
+            //qDebug().noquote() << "command:" << command;
+            //qDebug().noquote() << "data:" << data;
 
-            switch (field.at(0).toUpper().toLatin1()) {
-            case 'G':
-                break;
-            case 'M':
-                break;
-            case 'F':
-                break;
-            case 'X':
-                break;
-            case 'Y':
-                break;
-            case 'Z':
-                break;
-            case 'E':
-                break;
+            m_cmdCounts[command] += 1;
+
+            switch (command) {
+            case 'E': { // Extrude length
+                block.setField(ExtrudeLength, data);
+            } break;
+            case 'F': { // Feedrate in mm/min
+                block.setField(Feedrate, data);
+            } break;
+            case 'G': { // Standard command
+                block.setField(Standard, data);
+            } break;
+            case 'M': { // RepRap command
+                block.setField(RepRap, data);
+            } break;
+            case 'S': { // Command parameter
+                block.setField(Parameter, data);
+            } break;
+            case 'X': { // X coordinate
+                block.setField(X, data);
+            } break;
+            case 'Y': { // Y coordinate
+                block.setField(Y, data);
+            } break;
+            case 'Z': { // Z coordinate
+                block.setField(Z, data);
+            } break;
             }
+
+            // If the first field in the line isn't a command
+            if (iField == 0) {
+                if (!block.isValid) {
+                    qWarning().noquote()
+                        << "GCode error at line"
+                        << iLine
+                        << ": block not starting with a command (G or M)";
+                    return Block();
+                }
+            }
+
+            // Increment field number
+            iField++;
         }
     }
 
-    return cmd;
+    if (block.isValid)
+        m_totals++;
+
+    return block;
 }
 
 } // namespace gcode
