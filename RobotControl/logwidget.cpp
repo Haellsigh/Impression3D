@@ -2,6 +2,7 @@
 #include "ui_logwidget.h"
 
 #include <QApplication>
+#include <QScrollBar>
 #include <QTime>
 
 LogWidget* LogWidget::currentHandler = nullptr;
@@ -36,6 +37,11 @@ void LogWidget::handleMessages(QtMsgType type, const QMessageLogContext& context
     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
 }
 
+void LogWidget::logInfo(QString message)
+{
+    log(message);
+}
+
 void LogWidget::log(QString message, QtMsgType type)
 {
     QTextCharFormat newCharFormat = ui->logText->currentCharFormat();
@@ -60,6 +66,7 @@ void LogWidget::log(QString message, QtMsgType type)
 
     ui->logText->setCurrentCharFormat(newCharFormat);
     ui->logText->appendPlainText(QString("[%1] %2").arg(QTime::currentTime().toString("hh:mm:ss.zzz")).arg(message));
+    ui->logText->verticalScrollBar()->move(ui->logText->verticalScrollBar()->maximum(), 0);
 }
 
 void LogWidget::handleMessagesImpl(QtMsgType type, const QMessageLogContext& context, const QString& msg)

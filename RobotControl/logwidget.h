@@ -17,6 +17,7 @@ public:
     void setAsMessageHandler();
     static void handleMessages(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 
+    void logInfo(QString message);
     void log(QString message, QtMsgType type = QtInfoMsg);
 
 private:

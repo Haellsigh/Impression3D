@@ -60,7 +60,6 @@ QStringList Reader::readFile(QString filepath)
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning().noquote() << tr("Can't open file %1").arg(filepath);
-        emit error(tr("Can't open file %1").arg(filepath));
         return QStringList();
     }
 

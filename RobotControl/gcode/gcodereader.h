@@ -22,9 +22,6 @@ public:
 
     QVector<Block> decodeFile(QString filepath);
 
-signals:
-    void error(QString errorMessage);
-
 private:
     QStringList readFile(QString filepath);
 
