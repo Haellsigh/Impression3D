@@ -22,9 +22,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void requeteStatus(HSE::RequestStatus status);
+    void requeteStatus(dx200::RequestStatus status);
 
-    void StatusInformationReceived(HSE::StatusInformation info);
+    void StatusInformationReceived(dx200::StatusInformation info);
     void updateRobotStatus(bool error, int code = 0);
 
     void slotCurrentPosSelected(int posType);
@@ -37,7 +37,7 @@ private:
     // Robot status
     QLabel* m_lVRobotStatus = nullptr;
 
-    HSE::Client m_station;
+    dx200::HSEClient m_station;
     gcode::Reader m_reader;
 
     QTimer m_timerStatusRequest;

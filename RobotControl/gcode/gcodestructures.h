@@ -5,27 +5,18 @@
 
 namespace gcode {
 
-enum FieldType {
+enum CommandType {
+    Standard,
+    RepRap
+};
+
+enum ParameterType {
     ExtrudeLength,
     Feedrate,
-    Standard,
-    RepRap,
     Parameter,
     X,
     Y,
     Z
-};
-
-/**
- * @brief Represents a gcode field
- *
- * A field is either:
- *  - a command and the data
- *  - a parameter and the data
- */
-struct Field {
-    FieldType field;
-    double data;
 };
 
 /**
@@ -39,34 +30,32 @@ struct Field {
  */
 struct Block {
 private:
-    QPair<FieldType, double> command;
-    QHash<FieldType, double> parameters;
-
-    bool typeIsCommand(FieldType type)
-    {
-        return type == Standard || type == RepRap;
-    }
+    QPair<CommandType, double> command;
+    QHash<ParameterType, double> parameters;
 
 public:
     bool isValid = false;
 
-    void setField(const FieldType type, const double data)
+    void setField(const CommandType type, const double data)
     {
-        if (typeIsCommand(type)) {
-            isValid        = true;
-            command.first  = type;
-            command.second = data;
-        } else {
-            parameters.insert(type, data);
-        }
+        isValid        = true;
+        command.first  = type;
+        command.second = data;
+    }
+    void setField(const ParameterType type, const double data)
+    {
+        parameters.insert(type, data);
     }
 
-    bool hasParameter(const FieldType type) const
+    CommandType getCommandType() const { return command.first; }
+    double getCommandData() const { return command.second; }
+
+    bool hasParameter(const ParameterType type) const
     {
         return parameters.contains(type);
     }
 
-    double getParameter(const FieldType type) const
+    double getParameter(const ParameterType type) const
     {
         return parameters.value(type, 0);
     }

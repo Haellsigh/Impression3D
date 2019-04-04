@@ -4,18 +4,18 @@
 
 #include <QMessageBox>
 
-namespace HSE {
+namespace dx200 {
 
-Client::Client()
+HSEClient::HSEClient()
 {
     m_ip   = QHostAddress("192.168.255.1");
     m_port = 10040;
 
     m_socket.bind(m_ip, m_port);
-    connect(&m_socket, &QUdpSocket::readyRead, this, &Client::readPendingDatagrams);
+    connect(&m_socket, &QUdpSocket::readyRead, this, &HSEClient::readPendingDatagrams);
 }
 
-void Client::sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
+void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
 {
     uint16_t dataLength = data.length();
     QByteArray framedData;
@@ -93,26 +93,26 @@ void Client::sendCommand(Command command_id, int16_t instance, uint8_t attribut,
     m_socket.writeDatagram(framedData, m_ip, m_port);
 }
 
-void Client::statusInformationRead()
+void HSEClient::statusInformationRead()
 {
     sendCommand(STATUS_INFORMATION_R, 0x01, 0x00, GET_ALL_ATTRIBUTES);
 }
 
-void Client::resetAlarms()
+void HSEClient::resetAlarms()
 {
     QByteArray data(4, 0);
     data[0] = 1;
     sendCommand(ALARM_RESET, 0x01, 0x01, 0x10, data);
 }
 
-void Client::cancelErrors()
+void HSEClient::cancelErrors()
 {
     QByteArray data(4, 0);
     data[0] = 1;
     sendCommand(ALARM_RESET, 0x02, 0x01, 0x10, data);
 }
 
-void Client::hlock(bool lock)
+void HSEClient::hlock(bool lock)
 {
     // 1: HLock on, 2: HLock off
     uint8_t toLock = lock ? 1 : 2;
@@ -123,7 +123,7 @@ void Client::hlock(bool lock)
     sendCommand(HOLD_OR_SERVO_ONOFF, 0x03, 0x01, 0x10, data);
 }
 
-void Client::hold(bool hold)
+void HSEClient::hold(bool hold)
 {
     // 1: Hold on, 2: Hold off
     uint8_t toHold = hold ? 1 : 2;
@@ -134,7 +134,7 @@ void Client::hold(bool hold)
     sendCommand(HOLD_OR_SERVO_ONOFF, 0x01, 0x01, 0x10, data);
 }
 
-void Client::moveCartesian(Movement::Type type, Movement::Cartesian movement)
+void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 {
     QByteArray data(26, 0);
     int i     = 0;
@@ -153,11 +153,11 @@ void Client::moveCartesian(Movement::Type type, Movement::Cartesian movement)
     data[i++] = 0x00;
 }
 
-void Client::movePulse(Movement::Type type, Movement::Pulse movement)
+void HSEClient::movePulse(Movement::Type type, Movement::Pulse movement)
 {
 }
 
-void Client::readPendingDatagrams()
+void HSEClient::readPendingDatagrams()
 {
     while (m_socket.hasPendingDatagrams()) {
         QNetworkDatagram datagram = m_socket.receiveDatagram();
@@ -186,8 +186,10 @@ void Client::readPendingDatagrams()
         emit requestStatus(status);
 
         /// S'arreter si il y a une erreur
-        if (status.Status != 0x00)
+        if (status.Status != 0x00) {
+            qWarning().noquote() << "HSEClient" << tr("error") << "!";
             return;
+        }
 
         /// Traiter les données s'il y en a
         uint16_t dataLength = data.length() - 32;
@@ -199,7 +201,7 @@ void Client::readPendingDatagrams()
     }
 }
 
-void Client::processReceivedData(const uint8_t request_id, const QByteArray data)
+void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray data)
 {
     Command cmd = m_requests[request_id];
 

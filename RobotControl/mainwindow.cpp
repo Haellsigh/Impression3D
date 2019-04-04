@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     initConnections();
 
-    m_reader.decodeFile("test.gcode");
+    auto blocks = m_reader.decodeFile("test.gcode");
 
     // Request robot status at least once every 500ms
     m_timerStatusRequest.setInterval(1000);
@@ -39,11 +39,11 @@ MainWindow::~MainWindow()
 void MainWindow::initConnections()
 {
     // Request status response
-    connect(&m_station, &HSE::Client::requestStatus, this, &MainWindow::requeteStatus);
-    connect(&m_station, &HSE::Client::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
+    connect(&m_station, &dx200::HSEClient::requestStatus, this, &MainWindow::requeteStatus);
+    connect(&m_station, &dx200::HSEClient::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
 
     // Send periodic requests
-    connect(&m_timerStatusRequest, &QTimer::timeout, &m_station, &HSE::Client::statusInformationRead);
+    connect(&m_timerStatusRequest, &QTimer::timeout, &m_station, &dx200::HSEClient::statusInformationRead);
 
     // Close the log window when the mainwindow is closed
     //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
@@ -87,12 +87,12 @@ void MainWindow::initConnections()
     connect(ui->sliderAxis6, &QSlider::valueChanged, ui->spinAxis6, &QSpinBox::setValue);
 }
 
-void MainWindow::requeteStatus(HSE::RequestStatus status)
+void MainWindow::requeteStatus(dx200::RequestStatus status)
 {
     updateRobotStatus(status.Status == 0x00, status.Status);
 }
 
-void MainWindow::StatusInformationReceived(HSE::StatusInformation info)
+void MainWindow::StatusInformationReceived(dx200::StatusInformation info)
 {
     auto boolToString = [](bool value) {
         return value ? QString("true") : QString("false");

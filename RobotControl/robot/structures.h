@@ -8,7 +8,7 @@
 #include <QByteArray>
 #include <QString>
 
-namespace HSE {
+namespace dx200 {
 
 template <uint8_t byte, class T>
 uint8_t getByte(T value)

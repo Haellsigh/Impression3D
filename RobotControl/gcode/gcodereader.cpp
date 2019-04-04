@@ -82,23 +82,28 @@ Block Reader::parseFields(QStringList fields, int iLine)
             char command = field.at(0).toUpper().toLatin1();
             double data  = field.mid(1).toDouble();
 
-            //qDebug().noquote() << "command:" << command;
-            //qDebug().noquote() << "data:" << data;
-
             m_cmdCounts[command] += 1;
 
+            /**
+             * @todo Stop assuming that every line is correct
+             * Check for example if we get a G0 or G1, we need to have at least
+             * one of those: X, Y, Z, E, F
+             */
             switch (command) {
-            case 'E': { // Extrude length
-                block.setField(ExtrudeLength, data);
-            } break;
-            case 'F': { // Feedrate in mm/min
-                block.setField(Feedrate, data);
-            } break;
+            // Commands
             case 'G': { // Standard command
                 block.setField(Standard, data);
             } break;
             case 'M': { // RepRap command
                 block.setField(RepRap, data);
+            } break;
+
+            // Parameters
+            case 'E': { // Extrude length
+                block.setField(ExtrudeLength, data);
+            } break;
+            case 'F': { // Feedrate in mm/min
+                block.setField(Feedrate, data);
             } break;
             case 'S': { // Command parameter
                 block.setField(Parameter, data);

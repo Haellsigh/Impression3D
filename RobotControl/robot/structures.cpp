@@ -1,6 +1,6 @@
-#include "hsestructures.h"
+#include "structures.h"
 
-namespace HSE {
+namespace dx200 {
 
 uint16_t toUInt16(const QByteArray& data, const int index)
 {

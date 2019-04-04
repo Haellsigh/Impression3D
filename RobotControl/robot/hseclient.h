@@ -5,20 +5,20 @@
 
 #include <QUdpSocket>
 
-#include "hsestructures.h"
+#include "structures.h"
 
-namespace HSE {
+namespace dx200 {
 
 /**
- * @brief The Client class is the interface to the DX200 controller
+ * @brief High Speed Ethernet Client class, interface to the DX200 controller
  * @warning Everything is asynchronous, meaning if you request some data it
  * will arrive in the form of a signal later. Connect to the signal.
  */
-class Client : public QObject {
+class HSEClient : public QObject {
     Q_OBJECT
 
 public:
-    Client();
+    HSEClient();
 
     void sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data = QByteArray());
 

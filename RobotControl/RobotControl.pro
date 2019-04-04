@@ -27,18 +27,20 @@ CONFIG += c++14
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        robot/hseclient.cpp \
-        robot/hsestructures.cpp \
         gcode/gcodereader.cpp \
-    logwidget.cpp
+    logwidget.cpp \
+    robot/structures.cpp \
+    robot/hseclient.cpp \
+    robot/gcodeinterpreter.cpp
 
 HEADERS += \
-        robot/hseclient.h \
-        robot/hsestructures.h \
         mainwindow.h \
         gcode/gcodereader.h \
     gcode/gcodestructures.h \
-    logwidget.h
+    logwidget.h \
+    robot/structures.h \
+    robot/hseclient.h \
+    robot/gcodeinterpreter.h
 
 FORMS += \
         mainwindow.ui \

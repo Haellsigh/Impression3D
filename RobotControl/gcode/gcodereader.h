@@ -30,6 +30,7 @@ private:
     Block parseFields(QStringList fields, int iLine);
 
 private:
+    // Field statistics
     QMap<char, int> m_cmdCounts;
     int m_totals = 0;
 };
