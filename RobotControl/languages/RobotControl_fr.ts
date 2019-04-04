@@ -44,7 +44,7 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="89"/>
-        <location filename="../mainwindow.cpp" line="82"/>
+        <location filename="../mainwindow.cpp" line="128"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
@@ -104,71 +104,125 @@
         <translation>Contrôle manuel</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="320"/>
-        <source>GroupBox</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="327"/>
+        <location filename="../mainwindow.ui" line="599"/>
         <source>Current position</source>
         <translation>Position actuelle</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="335"/>
+        <location filename="../mainwindow.ui" line="432"/>
+        <location filename="../mainwindow.ui" line="716"/>
         <source>Pulse</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="342"/>
+        <location filename="../mainwindow.ui" line="320"/>
+        <source>Manual movements</source>
+        <translation>Mouvements mauels</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="341"/>
+        <location filename="../mainwindow.ui" line="371"/>
+        <location filename="../mainwindow.ui" line="401"/>
+        <location filename="../mainwindow.ui" line="508"/>
+        <location filename="../mainwindow.ui" line="538"/>
+        <location filename="../mainwindow.ui" line="568"/>
+        <source> µm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="416"/>
+        <source>Send position</source>
+        <translation>Envoyer la position</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="423"/>
+        <location filename="../mainwindow.ui" line="626"/>
+        <source>Axis 1</source>
+        <translation>Axe 1</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="442"/>
+        <location filename="../mainwindow.ui" line="726"/>
         <source>Base cartesian</source>
         <translation>Base cartésien</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="349"/>
+        <location filename="../mainwindow.ui" line="449"/>
+        <location filename="../mainwindow.ui" line="733"/>
         <source>User cartesian</source>
         <translation>Utilisateur cartésien</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="388"/>
+        <location filename="../mainwindow.ui" line="458"/>
+        <location filename="../mainwindow.ui" line="643"/>
+        <source>Axis 5</source>
+        <translation>Axe 5</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="465"/>
+        <location filename="../mainwindow.ui" line="619"/>
+        <source>Axis 4</source>
+        <translation>Axe 4</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="472"/>
+        <location filename="../mainwindow.ui" line="612"/>
+        <source>Axis 3</source>
+        <translation>Axe 3</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="479"/>
+        <location filename="../mainwindow.ui" line="605"/>
+        <source>Axis 2</source>
+        <translation>Axe 2</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="486"/>
+        <location filename="../mainwindow.ui" line="650"/>
+        <source>Axis 6</source>
+        <translation>Axe 6</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="807"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="393"/>
+        <location filename="../mainwindow.ui" line="812"/>
         <source>Tools</source>
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="397"/>
-        <location filename="../mainwindow.ui" line="408"/>
+        <location filename="../mainwindow.ui" line="816"/>
+        <location filename="../mainwindow.ui" line="827"/>
         <source>Language</source>
         <translation>Langage</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="88"/>
+        <location filename="../mainwindow.cpp" line="134"/>
         <source>No error</source>
         <translation>Aucune erreur</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="84"/>
+        <location filename="../mainwindow.cpp" line="130"/>
         <source>Error: code %1</source>
         <translation>Erreur: code %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="149"/>
+        <location filename="../mainwindow.cpp" line="205"/>
         <source>Current language changed to %1</source>
         <translation>Langage actuel changé vers %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="168"/>
+        <location filename="../mainwindow.cpp" line="224"/>
         <source>Loading language</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de la langue</translation>
     </message>
 </context>
 <context>
     <name>gcode::Reader</name>
     <message>
-        <location filename="../gcode/gcodereader.cpp" line="58"/>
+        <location filename="../gcode/gcodereader.cpp" line="62"/>
         <source>Can&apos;t open file %1</source>
         <translation>Impossible d&apos;ouvrir le fichier %1</translation>
     </message>
