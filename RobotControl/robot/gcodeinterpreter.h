@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "gcode/gcodestructures.h"
+#include "gcode/gcodereader.h"
 #include "hseclient.h"
 
 namespace dx200 {
@@ -28,7 +28,10 @@ public:
     // 2. set frame
     void setUserFrame(const double& x, const double& y, const double& z);
 
-    // 2. execute block
+    // 3. execute gcode
+    void executeFile(QString filepath);
+
+    // execute a block
     void execute(gcode::Block block);
 
 private slots:

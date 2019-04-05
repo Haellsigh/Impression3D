@@ -76,7 +76,9 @@ public slots:
     ///////////////////////////////////////////////////////////////////////////
     // List of answers to requests
 signals:
-    void getStatusInformationRead(StatusInformation info);
+    void readStatusInformation(StatusInformation info);
+    void readPositionCartesian(Movement::Cartesian position);
+    void readPositionPulse(Movement::Pulse position);
 
     ///////////////////////////////////////////////////////////////////////////
 signals:

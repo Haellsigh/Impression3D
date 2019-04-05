@@ -18,6 +18,7 @@ uint8_t getByte(const T& value)
 }
 
 uint16_t toUInt16(const QByteArray& data, const int index);
+uint16_t toUInt32(const QByteArray& data, const int index);
 
 /**
  * @brief Liste des commandes
@@ -32,6 +33,7 @@ enum Command : uint16_t {
     STATUS_INFORMATION_R             = 0x72,
     JOB_INFORMATION_R                = 0x73,
     AXIS_CONFIGURATION_INFORMATION_R = 0x74,
+    ROBOT_POSITION_DATA_R            = 0x75,
     PLURAL_B_VARIABLE_RW             = 0x302,
     BYTE_VARIABLE                    = 0x7A,
     ALARM_RESET                      = 0x82,
@@ -68,23 +70,25 @@ namespace Movement {
 
     // Speed unit & multiplier
     enum SpeedClassification : uint32_t {
-        JOINT_PERCENT,         // 0.01%/s
-        CARTESIAN_TRANSLATION, // 0.1 mm/s
-        CARTESIAN_ROTATION     // 0.1 degree/s
+        JOINT_PERCENT         = 0, // 0.01%/s
+        CARTESIAN_TRANSLATION = 1, // 0.1 mm/s
+        CARTESIAN_ROTATION    = 2  // 0.1 degree/s
+    };
+
+    struct BaseType {
+        std::array<int32_t, 3> baseAxisPosition = {};
+        SpeedClassification classification      = {};
+        int32_t robotNo                         = 0;
+        int32_t speed                           = 0;
+        int32_t stationNo                       = 0;
+        int32_t toolNo                          = 0;
     };
 
     //TODO: Verifier l'initialisation des std::array & des enum
-    struct Cartesian {
-
-        std::array<int32_t, 3> baseAxisPosition    = {};
-        SpeedClassification classification         = {};
+    struct Cartesian : public BaseType {
         int32_t coordinate                         = 0;
         uint32_t expandedType                      = 0;
-        int32_t robotNo                            = 0;
-        int32_t speed                              = 0;
         std::array<int32_t, 6> stationAxisPosition = {};
-        int32_t stationNo                          = 0;
-        int32_t toolNo                             = 0;
         int32_t tx                                 = 0;
         int32_t ty                                 = 0;
         int32_t tz                                 = 0;
@@ -95,15 +99,9 @@ namespace Movement {
         int32_t z                                  = 0;
     };
 
-    struct Pulse {
-        std::array<int32_t, 3> baseAxisPosition    = {};
-        SpeedClassification classification         = {};
+    struct Pulse : public BaseType {
         std::array<int32_t, 8> robotAxisPulseValue = {};
-        int32_t robotNo                            = 0;
-        int32_t speed                              = 0;
         std::array<int32_t, 6> stationAxisPosition = {};
-        int32_t stationNo                          = 0;
-        int32_t toolNo                             = 0;
     };
 
 } // namespace Movement

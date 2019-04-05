@@ -254,7 +254,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         StatusInformation info;
         info.data1 = data[0];
         info.data2 = data[4];
-        emit getStatusInformationRead(info);
+        emit readStatusInformation(info);
 
         // Reset the timeout
         m_timeoutStatus.start();
@@ -266,6 +266,40 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         break;
     case AXIS_CONFIGURATION_INFORMATION_R:
         break;
+    case ROBOT_POSITION_DATA_R: {
+        int i = 0; // Index of data type
+        // Pulse values
+        if (toUInt32(data, 4 * (i - 1)) == 0) {
+            Movement::Pulse pos;
+
+            i          = 3;
+            pos.toolNo = toUInt32(data, 4 * (i - 1));
+
+            for (i = 6; i <= 13; i++) {
+                pos.robotAxisPulseValue[i - 6] = toUInt32(data, 4 * (i - 1));
+            }
+
+            emit readPositionPulse(pos);
+        } else if (toUInt32(data, 0) == 16) {
+            Movement::Cartesian pos;
+
+            i                    = 2;
+            pos.type             = toUInt32(data, 4 * (i++ - 1));
+            pos.toolNo           = toUInt32(data, 4 * (i++ - 1));
+            pos.userCoordinateNo = toUInt32(data, 4 * (i++ - 1));
+            pos.expandedType     = toUInt32(data, 4 * (i++ - 1));
+            pos.x                = toUInt32(data, 4 * (i++ - 1));
+            pos.y                = toUInt32(data, 4 * (i++ - 1));
+            pos.z                = toUInt32(data, 4 * (i++ - 1));
+            pos.tx               = toUInt32(data, 4 * (i++ - 1));
+            pos.ty               = toUInt32(data, 4 * (i++ - 1));
+            pos.tz               = toUInt32(data, 4 * (i++ - 1));
+
+            //TODO: What to do with 7th and 8th axis
+
+            emit readPositionCartesian(pos);
+        }
+    } break;
     case PLURAL_B_VARIABLE_RW:
         break;
     case BYTE_VARIABLE:

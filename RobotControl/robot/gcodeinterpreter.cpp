@@ -6,7 +6,7 @@ void GCodeInterpreter::setClient(HSEClient* client)
 {
     m_client = client;
 
-    connect(m_client, &HSEClient::getStatusInformationRead,
+    connect(m_client, &HSEClient::readStatusInformation,
             this, &GCodeInterpreter::handleStatusInformationRead);
 }
 
@@ -15,6 +15,10 @@ void GCodeInterpreter::setUserFrame(const double& x, const double& y, const doub
     m_userBase[0] = x;
     m_userBase[1] = y;
     m_userBase[2] = z;
+}
+
+void GCodeInterpreter::executeFile(QString filepath)
+{
 }
 
 void GCodeInterpreter::execute(gcode::Block block)
@@ -47,7 +51,7 @@ void GCodeInterpreter::execute(gcode::Block block)
         }
         // Handle unknown command
         else {
-            qWarning().noquote().nospace() << "GCode Interpreter: unknown command G" << commandData;
+            qWarning().noquote().nospace() << tr("GCode Interpreter: unknown command ") << "G" << commandData;
         }
     } break;
 
@@ -83,7 +87,7 @@ void GCodeInterpreter::execute(gcode::Block block)
         }
         // Handle unknown command
         else {
-            qWarning().noquote().nospace() << "GCode Interpreter: unknown command M" << commandData;
+            qWarning().noquote().nospace() << tr("GCode Interpreter: unknown command ") << "M" << commandData;
         }
         break;
     }

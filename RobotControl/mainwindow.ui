@@ -599,36 +599,8 @@
            <string>Current position</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
-           <item row="2" column="0">
-            <widget class="QLabel" name="lKAxis2">
-             <property name="text">
-              <string>Axis 2</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="lKAxis3">
-             <property name="text">
-              <string>Axis 3</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="lKAxis4">
-             <property name="text">
-              <string>Axis 4</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="lKAxis1">
-             <property name="text">
-              <string>Axis 1</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="lVAxis1">
+           <item row="6" column="1">
+            <widget class="QLabel" name="lVAxis6">
              <property name="text">
               <string notr="true">0</string>
              </property>
@@ -637,17 +609,17 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="lKAxis5">
+           <item row="3" column="2">
+            <widget class="QLabel" name="lKUnit3">
              <property name="text">
-              <string>Axis 5</string>
+              <string notr="true"> µm</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="lKAxis6">
+           <item row="1" column="2">
+            <widget class="QLabel" name="lKUnit1">
              <property name="text">
-              <string>Axis 6</string>
+              <string notr="true"> µm</string>
              </property>
             </widget>
            </item>
@@ -661,6 +633,19 @@
              </property>
             </widget>
            </item>
+           <item row="7" column="0" colspan="3">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
            <item row="5" column="1">
             <widget class="QLabel" name="lVAxis5">
              <property name="text">
@@ -671,13 +656,17 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="lVAxis2">
+           <item row="3" column="0">
+            <widget class="QLabel" name="lKAxis3">
              <property name="text">
-              <string notr="true">0</string>
+              <string>Axis 3</string>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </widget>
+           </item>
+           <item row="5" column="2">
+            <widget class="QLabel" name="lKUnit5">
+             <property name="text">
+              <string notr="true"> µm</string>
              </property>
             </widget>
            </item>
@@ -691,18 +680,29 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="lVAxis6">
+           <item row="2" column="2">
+            <widget class="QLabel" name="lKUnit2">
              <property name="text">
-              <string notr="true">0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <string notr="true"> µm</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="lKUnit1">
+           <item row="2" column="0">
+            <widget class="QLabel" name="lKAxis2">
+             <property name="text">
+              <string>Axis 2</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="lKAxis6">
+             <property name="text">
+              <string>Axis 6</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLabel" name="lKUnit4">
              <property name="text">
               <string notr="true"> µm</string>
              </property>
@@ -736,31 +736,10 @@
              </item>
             </layout>
            </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="lKUnit2">
+           <item row="4" column="0">
+            <widget class="QLabel" name="lKAxis4">
              <property name="text">
-              <string notr="true"> µm</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QLabel" name="lKUnit3">
-             <property name="text">
-              <string notr="true"> µm</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLabel" name="lKUnit4">
-             <property name="text">
-              <string notr="true"> µm</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <widget class="QLabel" name="lKUnit5">
-             <property name="text">
-              <string notr="true"> µm</string>
+              <string>Axis 4</string>
              </property>
             </widget>
            </item>
@@ -771,23 +750,56 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="0" colspan="3">
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+           <item row="2" column="1">
+            <widget class="QLabel" name="lVAxis2">
+             <property name="text">
+              <string notr="true">0</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
-            </spacer>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="lKAxis5">
+             <property name="text">
+              <string>Axis 5</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="lVAxis1">
+             <property name="text">
+              <string notr="true">0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lKAxis1">
+             <property name="text">
+              <string>Axis 1</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="3">
+            <widget class="QPushButton" name="bSetUserFrame">
+             <property name="text">
+              <string>Set user frame</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
       </widget>
      </widget>
     </item>
@@ -799,7 +811,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

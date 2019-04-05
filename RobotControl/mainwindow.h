@@ -8,6 +8,7 @@
 
 #include "gcode/gcodereader.h"
 #include "logwidget.h"
+#include "robot/gcodeinterpreter.h"
 #include "robot/hseclient.h"
 
 namespace Ui {
@@ -22,13 +23,16 @@ public:
     ~MainWindow();
 
 private slots:
-    void requeteStatus(dx200::RequestStatus status);
+    void requestStatus(dx200::RequestStatus status);
 
-    void StatusInformationReceived(dx200::StatusInformation info);
+    void handleStatusInformation(dx200::StatusInformation info);
     void updateRobotStatus(bool error, int code = 0);
+    void handleRobotCartesianPosition(dx200::Movement::Cartesian position);
 
     void slotCurrentPosSelected(int posType);
     void slotMovePosSelected(int posType);
+
+    void on_bSetUserFrame_clicked();
 
 private:
     void initConnections();
@@ -38,6 +42,7 @@ private:
     QLabel* m_lVRobotStatus = nullptr;
 
     dx200::HSEClient m_station;
+    dx200::GCodeInterpreter m_interpreter;
     gcode::Reader m_reader;
 
     // Traductions

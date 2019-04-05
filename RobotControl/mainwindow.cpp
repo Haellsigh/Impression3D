@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     initConnections();
 
+    m_interpreter.setClient(&m_station);
+
     auto blocks = m_reader.decodeFile("test.gcode");
 }
 
@@ -33,11 +35,9 @@ MainWindow::~MainWindow()
 void MainWindow::initConnections()
 {
     // Request status response
-    connect(&m_station, &dx200::HSEClient::requestStatus, this, &MainWindow::requeteStatus);
-    connect(&m_station, &dx200::HSEClient::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
-
-    // Close the log window when the mainwindow is closed
-    //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
+    connect(&m_station, &dx200::HSEClient::requestStatus, this, &MainWindow::requestStatus);
+    connect(&m_station, &dx200::HSEClient::readStatusInformation, this, &MainWindow::handleStatusInformation);
+    //connect(&m_station, &dx200::HSEClient::)
 
     connect(ui->radioCurPosPulse, &QRadioButton::clicked, [this]() {
         slotCurrentPosSelected(1);
@@ -78,12 +78,12 @@ void MainWindow::initConnections()
     connect(ui->sliderAxis6, &QSlider::valueChanged, ui->spinAxis6, &QSpinBox::setValue);
 }
 
-void MainWindow::requeteStatus(dx200::RequestStatus status)
+void MainWindow::requestStatus(dx200::RequestStatus status)
 {
     updateRobotStatus(status.status == 0x00, status.status);
 }
 
-void MainWindow::StatusInformationReceived(dx200::StatusInformation info)
+void MainWindow::handleStatusInformation(dx200::StatusInformation info)
 {
     auto boolToString = [](bool value) {
         return value ? QString("true") : QString("false");
@@ -122,6 +122,16 @@ void MainWindow::updateRobotStatus(bool error, int code)
     }
 
     m_lVRobotStatus->setText(robotStatus);
+}
+
+void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian position)
+{
+    ui->lVAxis1->setNum(position.x);
+    ui->lVAxis2->setNum(position.y);
+    ui->lVAxis3->setNum(position.z);
+    ui->lVAxis4->setNum(position.tx);
+    ui->lVAxis5->setNum(position.ty);
+    ui->lVAxis6->setNum(position.tz);
 }
 
 void MainWindow::slotCurrentPosSelected(int posType)
@@ -243,4 +253,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
     m_logWidget.close();
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::on_bSetUserFrame_clicked()
+{
+    double ox = 0, oy = 0, oz = 0;
+
+    //m_interpreter.setUserFrame()
 }
