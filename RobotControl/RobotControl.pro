@@ -27,24 +27,24 @@ CONFIG += c++14
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        gcode/gcodereader.cpp \
-    logwidget.cpp \
-    robot/structures.cpp \
-    robot/hseclient.cpp \
-    robot/gcodeinterpreter.cpp
+        logwidget.cpp \
+        robot/structures.cpp \
+        robot/hseclient.cpp \
+        robot/gcodeinterpreter.cpp \
+        gcode/gcodereader.cpp
 
 HEADERS += \
         mainwindow.h \
-        gcode/gcodereader.h \
-    gcode/gcodestructures.h \
-    logwidget.h \
-    robot/structures.h \
-    robot/hseclient.h \
-    robot/gcodeinterpreter.h
+        logwidget.h \
+        robot/structures.h \
+        robot/hseclient.h \
+        robot/gcodeinterpreter.h \
+        gcode/gcodestructures.h \
+        gcode/gcodereader.h
 
 FORMS += \
         mainwindow.ui \
-    logwidget.ui
+        logwidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
