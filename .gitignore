@@ -38,3 +38,6 @@ Makefile*
 
 # QtLinguist compilé
 *.qm
+
+# Visual Studio Code
+.vscode/
