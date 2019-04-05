@@ -136,6 +136,7 @@ void HSEClient::hold(bool hold)
 
 void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 {
+
     QByteArray data(26, 0);
     int i     = 0;
     data[i++] = movement.RobotNo;
@@ -151,6 +152,9 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
     data[i++] = movement.Tz;
 
     data[i++] = 0x00;
+
+    data[i++] = movement.Type;
+    data[i++] = movement.ExpandedType;
 }
 
 void HSEClient::movePulse(Movement::Type type, Movement::Pulse movement)

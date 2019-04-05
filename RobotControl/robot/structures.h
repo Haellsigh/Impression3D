@@ -11,9 +11,10 @@
 namespace dx200 {
 
 template <uint8_t byte, class T>
-uint8_t getByte(T value)
+const uint8_t getByte(const T& value)
 {
-    return (value & (0xFF << (8 * byte))) >> (8 * byte);
+    uint16_t bits = 8 * byte;
+    return (value & (0xFF << bits)) >> bits;
 }
 
 uint16_t toUInt16(const QByteArray& data, const int index);
