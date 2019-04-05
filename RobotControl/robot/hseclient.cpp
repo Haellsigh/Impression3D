@@ -136,25 +136,58 @@ void HSEClient::hold(bool hold)
 
 void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 {
+    const uint32_t n = 26;
+    std::array<uint32_t, n> data32bit;
+    int i = 0;
 
-    QByteArray data(26, 0);
-    int i     = 0;
-    data[i++] = movement.RobotNo;
-    data[i++] = movement.StationNo;
-    data[i++] = movement.Classification;
-    data[i++] = movement.Speed;
-    data[i++] = movement.Coordinate;
-    data[i++] = movement.X;
-    data[i++] = movement.Y;
-    data[i++] = movement.Z;
-    data[i++] = movement.Tx;
-    data[i++] = movement.Ty;
-    data[i++] = movement.Tz;
+    // i = 0
+    data32bit[i++] = movement.robotNo;
+    data32bit[i++] = movement.stationNo;
+    data32bit[i++] = movement.classification;
+    data32bit[i++] = movement.speed;
+    data32bit[i++] = movement.coordinate;
+    data32bit[i++] = movement.x;
+    data32bit[i++] = movement.y;
+    data32bit[i++] = movement.z;
+    data32bit[i++] = movement.tx;
+    data32bit[i++] = movement.ty;
+    data32bit[i++] = movement.tz;
 
-    data[i++] = 0x00;
+    // i = 11
+    data32bit[i++] = 0x00;
 
-    data[i++] = movement.Type;
-    data[i++] = movement.ExpandedType;
+    // i = 12
+    data32bit[i++] = movement.type;
+    data32bit[i++] = movement.expandedType;
+    data32bit[i++] = movement.toolNo;
+    data32bit[i++] = movement.userCoordinateNo;
+
+    // i = 16
+    data32bit[i++] = 0x00;
+
+    // i = 17
+    data32bit[i++] = movement.baseAxisPosition.at(0);
+    data32bit[i++] = movement.baseAxisPosition.at(1);
+    data32bit[i++] = movement.baseAxisPosition.at(2);
+
+    // i = 20
+    data32bit[i++] = movement.stationAxisPosition.at(0);
+    data32bit[i++] = movement.stationAxisPosition.at(1);
+    data32bit[i++] = movement.stationAxisPosition.at(2);
+    data32bit[i++] = movement.stationAxisPosition.at(3);
+    data32bit[i++] = movement.stationAxisPosition.at(4);
+    data32bit[i++] = movement.stationAxisPosition.at(5);
+
+    // Pack the 32bit data array into an array of 8bit data
+    QByteArray data(n * 4, Qt::Initialization::Uninitialized);
+    for (int i = 0; i < n; i++) {
+        data[i * 4]     = getByte<0>(data32bit[i]);
+        data[i * 4 + 1] = getByte<1>(data32bit[i]);
+        data[i * 4 + 2] = getByte<2>(data32bit[i]);
+        data[i * 4 + 3] = getByte<3>(data32bit[i]);
+    }
+
+    sendCommand(MOVE_CARTESIAN, type, 0x01, 0x02, data);
 }
 
 void HSEClient::movePulse(Movement::Type type, Movement::Pulse movement)
