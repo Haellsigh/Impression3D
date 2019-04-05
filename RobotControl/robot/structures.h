@@ -11,7 +11,7 @@
 namespace dx200 {
 
 template <uint8_t byte, class T>
-const uint8_t getByte(const T& value)
+uint8_t getByte(const T& value)
 {
     uint16_t bits = 8 * byte;
     return (value & (0xFF << bits)) >> bits;
@@ -59,21 +59,25 @@ struct AlarmData {
 };
 
 namespace Movement {
-
+    // Movement type
     enum Type : uint8_t {
         ABSOLUTE_JOINT        = 1,
         ABSOLUTE_CARTESIAN    = 2,
         INCREMENTAL_CARTESIAN = 3
     };
 
-    //TODO: Verifier l'initialisation des std::array
-    struct Cartesian {
-        enum Classification {
+    // Speed unit & multiplier
+    enum SpeedClassification : uint32_t {
+        JOINT_PERCENT,         // 0.01%/s
+        CARTESIAN_TRANSLATION, // 0.1 mm/s
+        CARTESIAN_ROTATION     // 0.1 degree/s
+    };
 
-        };
+    //TODO: Verifier l'initialisation des std::array & des enum
+    struct Cartesian {
 
         std::array<int32_t, 3> baseAxisPosition    = {};
-        int32_t classification                     = 0;
+        SpeedClassification classification         = {};
         int32_t coordinate                         = 0;
         uint32_t expandedType                      = 0;
         int32_t robotNo                            = 0;
@@ -93,7 +97,7 @@ namespace Movement {
 
     struct Pulse {
         std::array<int32_t, 3> baseAxisPosition    = {};
-        int32_t classification                     = 0;
+        SpeedClassification classification         = {};
         std::array<int32_t, 8> robotAxisPulseValue = {};
         int32_t robotNo                            = 0;
         int32_t speed                              = 0;

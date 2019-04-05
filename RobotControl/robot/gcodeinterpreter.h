@@ -1,6 +1,8 @@
 #ifndef GCODEINTERFACE_H
 #define GCODEINTERFACE_H
 
+#include <QObject>
+
 #include "gcode/gcodestructures.h"
 #include "hseclient.h"
 
@@ -14,7 +16,9 @@ namespace dx200 {
  *     1. Set the client using setClient()
  *     2. Set the user transformation using setUserFrame()
  */
-class GCodeInterpreter {
+class GCodeInterpreter : public QObject {
+    Q_OBJECT
+
     using doubleLimits = std::numeric_limits<double>;
 
 public:
@@ -22,7 +26,7 @@ public:
     void setClient(HSEClient* client);
 
     // 2. set frame
-    void setUserFrame();
+    void setUserFrame(const double& x, const double& y, const double& z);
 
     // 2. execute block
     void execute(gcode::Block block);
@@ -32,13 +36,31 @@ private:
 
     // Keep an internal state on some parameters
     struct ClientState {
-        double X = 0, Y = 0, Z = 0, E = 0, F = 0;
+        void update(gcode::Block block);
+
+        // Positions in mm
+        double X = 0, Y = 0, Z = 0;
+        // Length to extrude during the next move command
+        double E = 0;
+        // Speed in mm/min
+        double F = 0;
+        // Parameter
+        double P = 0;
     };
 
     ClientState m_state;
 
 private:
-    void sendMove(double x, double y, double z);
+    /**
+     * @brief Send move command to robot
+     * @param x position in mm
+     * @param y position in mm
+     * @param z position in mm
+     * @param speed in mm/min
+     */
+    void sendMove(const double x, const double y, const double z, const double speed);
+
+    std::array<double, 3> m_userBase;
 };
 
 } // namespace dx200

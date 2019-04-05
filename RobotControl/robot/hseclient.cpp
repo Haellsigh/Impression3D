@@ -155,15 +155,13 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 
     // i = 11
     data32bit[i++] = 0x00;
+    data32bit[i++] = 0x00;
 
-    // i = 12
+    // i = 13
     data32bit[i++] = movement.type;
     data32bit[i++] = movement.expandedType;
     data32bit[i++] = movement.toolNo;
     data32bit[i++] = movement.userCoordinateNo;
-
-    // i = 16
-    data32bit[i++] = 0x00;
 
     // i = 17
     data32bit[i++] = movement.baseAxisPosition.at(0);
@@ -180,7 +178,7 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 
     // Pack the 32bit data array into an array of 8bit data
     QByteArray data(n * 4, Qt::Initialization::Uninitialized);
-    for (int i = 0; i < n; i++) {
+    for (uint32_t i = 0; i < n; i++) {
         data[i * 4]     = getByte<0>(data32bit[i]);
         data[i * 4 + 1] = getByte<1>(data32bit[i]);
         data[i * 4 + 2] = getByte<2>(data32bit[i]);
@@ -203,7 +201,7 @@ void HSEClient::readPendingDatagrams()
         // Read the request id
         uint8_t request_id = data.at(11);
 
-        /// Read the request's status
+        /// Read the answer's status
         RequestStatus status;
         status.status          = data.at(25);
         status.addedStatusSize = data.at(26);

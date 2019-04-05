@@ -71,6 +71,7 @@ void LogWidget::log(QString message, QtMsgType type)
 
 void LogWidget::handleMessagesImpl(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
+    (void)context;
     //QByteArray localMsg = msg.toLocal8Bit();
     log(msg, type);
 }

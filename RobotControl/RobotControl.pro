@@ -54,8 +54,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 # Translations
 TRANSLATIONS += languages/RobotControl_en.ts \
                 languages/RobotControl_fr.ts
-
-################################################################################
-# External libraries
-# This is needed because Eigen has thousands of warnings which makes compilation slow
-QMAKE_CXXFLAGS += -isystem C:\libraries
