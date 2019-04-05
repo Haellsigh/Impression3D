@@ -167,35 +167,35 @@ void HSEClient::readPendingDatagrams()
         QNetworkDatagram datagram = m_socket.receiveDatagram();
         QByteArray data           = datagram.data();
 
-        // Lire l'id de la requète
+        // Read the request id
         uint8_t request_id = data.at(11);
 
-        /// Lire le status de la requete
+        /// Read the request's status
         RequestStatus status;
-        status.Status          = data.at(25);
-        status.AddedStatusSize = data.at(26);
+        status.status          = data.at(25);
+        status.addedStatusSize = data.at(26);
 
-        // Voir page 21 debut manuel ethernet dx200
-        // Taille >= 2 bytes ==> Au moins Status 1 existe
-        if (status.AddedStatusSize >= 1) // 2 bytes
+        // See page 21 of the dx200 ethernet manual
+        // Size >= 1 bytes ==> At least status1 exists
+        if (status.addedStatusSize >= 1) // 2 bytes
         {
-            status.Status1 = toUInt16(data, 28);
+            status.status1 = toUInt16(data, 28);
         }
-        // Au moins Status 1 et 2 existent
-        if (status.AddedStatusSize >= 2) // 4 bytes
+        // At least status 1 et 2 exists
+        if (status.addedStatusSize >= 2) // 4 bytes
         {
-            status.Status2 = toUInt16(data, 30);
+            status.status2 = toUInt16(data, 30);
         }
 
         emit requestStatus(status);
 
-        /// S'arreter si il y a une erreur
-        if (status.Status != 0x00) {
+        /// Stop here if there's an error
+        if (status.status != 0x00) {
             qWarning().noquote() << "HSEClient" << tr("error") << "!";
             return;
         }
 
-        /// Traiter les données s'il y en a
+        /// Process the data if there's any
         uint16_t dataLength = data.length() - 32;
         if (dataLength > 0) {
             QByteArray dataReceived = data.mid(32);
@@ -216,8 +216,8 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         break;
     case STATUS_INFORMATION_R: {
         StatusInformation info;
-        info.Data1 = data[0];
-        info.Data2 = data[4];
+        info.data1 = data[0];
+        info.data2 = data[4];
         emit getStatusInformationRead(info);
     } break;
     case JOB_INFORMATION_R:

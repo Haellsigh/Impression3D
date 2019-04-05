@@ -51,69 +51,73 @@ enum Service : uint8_t {
 };
 
 struct AlarmData {
-    uint32_t Code    = 0;
-    uint32_t Data    = 0;
-    std::string Name = {};
-    std::string Time = {};
-    uint32_t Type    = 0;
+    uint32_t code    = 0;
+    uint32_t data    = 0;
+    std::string name = {};
+    std::string time = {};
+    uint32_t type    = 0;
 };
 
 namespace Movement {
 
     enum Type : uint8_t {
-        ABSOLUTE_JOINT      = 1,
-        ABSOLUTE_CARTESIAN  = 2,
-        INCREMENT_CARTESIAN = 3
+        ABSOLUTE_JOINT        = 1,
+        ABSOLUTE_CARTESIAN    = 2,
+        INCREMENTAL_CARTESIAN = 3
     };
 
     //TODO: Verifier l'initialisation des std::array
     struct Cartesian {
-        std::array<int32_t, 3> BaseAxisPosition    = {};
-        int32_t Classification                     = 0;
-        int32_t Coordinate                         = 0;
-        uint32_t ExpandedType                      = 0;
-        int32_t RobotNo                            = 0;
-        int32_t Speed                              = 0;
-        std::array<int32_t, 6> StationAxisPosition = {};
-        int32_t StationNo                          = 0;
-        int32_t ToolNo                             = 0;
-        int32_t Tx                                 = 0;
-        int32_t Ty                                 = 0;
-        uint32_t Type                              = 0;
-        int32_t Tz                                 = 0;
-        int32_t UserCoordinateNo                   = 0;
-        int32_t X                                  = 0;
-        int32_t Y                                  = 0;
-        int32_t Z                                  = 0;
+        enum Classification {
+
+        };
+
+        std::array<int32_t, 3> baseAxisPosition    = {};
+        int32_t classification                     = 0;
+        int32_t coordinate                         = 0;
+        uint32_t expandedType                      = 0;
+        int32_t robotNo                            = 0;
+        int32_t speed                              = 0;
+        std::array<int32_t, 6> stationAxisPosition = {};
+        int32_t stationNo                          = 0;
+        int32_t toolNo                             = 0;
+        int32_t tx                                 = 0;
+        int32_t ty                                 = 0;
+        int32_t tz                                 = 0;
+        uint32_t type                              = 0;
+        int32_t userCoordinateNo                   = 0;
+        int32_t x                                  = 0;
+        int32_t y                                  = 0;
+        int32_t z                                  = 0;
     };
 
     struct Pulse {
-        std::array<int32_t, 3> BaseAxisPosition    = {};
-        int32_t Classification                     = 0;
-        std::array<int32_t, 8> RobotAxisPulseValue = {};
-        int32_t RobotNo                            = 0;
-        int32_t Speed                              = 0;
-        std::array<int32_t, 6> StationAxisPosition = {};
-        int32_t StationNo                          = 0;
-        int32_t ToolNo                             = 0;
+        std::array<int32_t, 3> baseAxisPosition    = {};
+        int32_t classification                     = 0;
+        std::array<int32_t, 8> robotAxisPulseValue = {};
+        int32_t robotNo                            = 0;
+        int32_t speed                              = 0;
+        std::array<int32_t, 6> stationAxisPosition = {};
+        int32_t stationNo                          = 0;
+        int32_t toolNo                             = 0;
     };
 
 } // namespace Movement
 
 struct RequestStatus {
-    uint8_t AddedStatusSize = 0;
-    uint8_t Status          = 0;
-    uint16_t Status1        = 0;
-    uint16_t Status2        = 0;
+    uint8_t addedStatusSize = 0;
+    uint8_t status          = 0;
+    uint16_t status1        = 0;
+    uint16_t status2        = 0;
 };
 
 /**
  * @brief Station status information
  */
 struct StatusInformation {
-    bool NetworkError = false;
-    uint8_t Data1     = 0;
-    uint8_t Data2     = 0;
+    bool networkError = false;
+    uint8_t data1     = 0;
+    uint8_t data2     = 0;
 
     /**
      * @brief Step
@@ -121,42 +125,42 @@ struct StatusInformation {
      */
     bool Step()
     {
-        return (Data1 & 0b00000001);
+        return (data1 & 0b00000001);
     }
 
     bool Cycle1()
     {
-        return (Data1 & 0b00000010);
+        return (data1 & 0b00000010);
     }
 
     bool AutomaticAndContinuous()
     {
-        return (Data1 & 0b00000100);
+        return (data1 & 0b00000100);
     }
 
     bool Running()
     {
-        return (Data1 & 0b00001000);
+        return (data1 & 0b00001000);
     }
 
     bool InGuardSafeOperation()
     {
-        return (Data1 & 0b00010000);
+        return (data1 & 0b00010000);
     }
 
     bool Teach()
     {
-        return (Data1 & 0b00100000);
+        return (data1 & 0b00100000);
     }
 
     bool Play()
     {
-        return (Data1 & 0b01000000);
+        return (data1 & 0b01000000);
     }
 
     bool CommandRemote()
     {
-        return (Data1 & 0b10000000);
+        return (data1 & 0b10000000);
     }
 
     /**
@@ -165,7 +169,7 @@ struct StatusInformation {
      */
     bool InHoldByPP()
     {
-        return (Data2 & 0b00000010);
+        return (data2 & 0b00000010);
     }
 
     /**
@@ -174,7 +178,7 @@ struct StatusInformation {
      */
     bool InHoldByExt()
     {
-        return (Data2 & 0b00000100);
+        return (data2 & 0b00000100);
     }
 
     /**
@@ -183,22 +187,22 @@ struct StatusInformation {
      */
     bool InHoldByCmd()
     {
-        return (Data2 & 0b00001000);
+        return (data2 & 0b00001000);
     }
 
     bool Alarming()
     {
-        return (Data2 & 0b00010000);
+        return (data2 & 0b00010000);
     }
 
     bool ErrorOcurring()
     {
-        return (Data2 & 0b00100000);
+        return (data2 & 0b00100000);
     }
 
     bool Servo()
     {
-        return (Data2 & 0b01000000);
+        return (data2 & 0b01000000);
     }
 };
 
