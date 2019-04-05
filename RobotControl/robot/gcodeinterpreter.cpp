@@ -5,6 +5,9 @@ namespace dx200 {
 void GCodeInterpreter::setClient(HSEClient* client)
 {
     m_client = client;
+
+    connect(m_client, &HSEClient::getStatusInformationRead,
+            this, &GCodeInterpreter::handleStatusInformationRead);
 }
 
 void GCodeInterpreter::setUserFrame(const double& x, const double& y, const double& z)
@@ -84,6 +87,10 @@ void GCodeInterpreter::execute(gcode::Block block)
         }
         break;
     }
+}
+
+void GCodeInterpreter::handleStatusInformationRead(StatusInformation info)
+{
 }
 
 void GCodeInterpreter::sendMove(const double x, const double y, const double z, const double speed)

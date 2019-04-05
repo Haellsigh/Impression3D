@@ -13,6 +13,11 @@ HSEClient::HSEClient()
 
     m_socket.bind(m_ip, m_port);
     connect(&m_socket, &QUdpSocket::readyRead, this, &HSEClient::readPendingDatagrams);
+
+    // Periodic requests
+    connect(&m_timeoutStatus, &QTimer::timeout, this, &HSEClient::statusInformationRead);
+    m_timeoutStatus.setInterval(500);
+    m_timeoutStatus.start();
 }
 
 void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
@@ -250,6 +255,12 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         info.data1 = data[0];
         info.data2 = data[4];
         emit getStatusInformationRead(info);
+
+        // Reset the timeout
+        m_timeoutStatus.start();
+        // Request new information as soon as possible
+        statusInformationRead();
+        //TODO: See if overloads the connection (maybe add a delay)
     } break;
     case JOB_INFORMATION_R:
         break;

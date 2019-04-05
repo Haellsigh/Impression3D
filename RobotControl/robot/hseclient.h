@@ -2,7 +2,7 @@
 #define HSECLIENT_H
 
 #include <QObject>
-
+#include <QTimer>
 #include <QUdpSocket>
 
 #include "structures.h"
@@ -107,6 +107,9 @@ private:
      */
     QHash<uint8_t, Command> m_requests;
     uint8_t m_requestCount = 0;
+
+    QTimer m_timeoutStatus;
+    void receivedStatusInformation(const StatusInformation& info);
 };
 }
 

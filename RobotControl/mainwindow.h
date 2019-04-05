@@ -40,8 +40,6 @@ private:
     dx200::HSEClient m_station;
     gcode::Reader m_reader;
 
-    QTimer m_timerStatusRequest;
-
     // Traductions
 protected:
     void changeEvent(QEvent* event);

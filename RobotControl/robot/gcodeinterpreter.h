@@ -31,6 +31,9 @@ public:
     // 2. execute block
     void execute(gcode::Block block);
 
+private slots:
+    void handleStatusInformationRead(StatusInformation info);
+
 private:
     HSEClient* m_client;
 
@@ -46,6 +49,8 @@ private:
         double F = 0;
         // Parameter
         double P = 0;
+
+        bool running = false;
     };
 
     ClientState m_state;

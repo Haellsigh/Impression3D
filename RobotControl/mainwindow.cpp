@@ -23,12 +23,6 @@ MainWindow::MainWindow(QWidget* parent)
     initConnections();
 
     auto blocks = m_reader.decodeFile("test.gcode");
-
-    // Request robot status at least once every 500ms
-    m_timerStatusRequest.setInterval(1000);
-    m_timerStatusRequest.start();
-    // Send the first request
-    m_station.statusInformationRead();
 }
 
 MainWindow::~MainWindow()
@@ -41,9 +35,6 @@ void MainWindow::initConnections()
     // Request status response
     connect(&m_station, &dx200::HSEClient::requestStatus, this, &MainWindow::requeteStatus);
     connect(&m_station, &dx200::HSEClient::getStatusInformationRead, this, &MainWindow::StatusInformationReceived);
-
-    // Send periodic requests
-    connect(&m_timerStatusRequest, &QTimer::timeout, &m_station, &dx200::HSEClient::statusInformationRead);
 
     // Close the log window when the mainwindow is closed
     //connect(this, &MainWindow::destroyed, m_logWidget, &LogWidget::close);
@@ -112,11 +103,6 @@ void MainWindow::StatusInformationReceived(dx200::StatusInformation info)
     ui->lVRunning->setText(boolToString(info.Running()));
     ui->lVStep->setText(boolToString(info.Step()));
     ui->lVTeach->setText(boolToString(info.Teach()));
-
-    // Update information as fast as possible
-    m_station.statusInformationRead();
-    // Reset the 500ms timer
-    m_timerStatusRequest.start();
 }
 
 void MainWindow::updateRobotStatus(bool error, int code)
