@@ -16,6 +16,9 @@ HSEClient::HSEClient()
 
     // Periodic requests
     connect(&m_timeoutStatus, &QTimer::timeout, this, &HSEClient::statusInformationRead);
+    connect(&m_timeoutStatus, &QTimer::timeout, [&]() {
+        qWarning() << tr("HSEClient timeout: Robot's station did not answer in time");
+    });
     m_timeoutStatus.setInterval(500);
     m_timeoutStatus.start();
 }
@@ -270,7 +273,8 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         m_timeoutStatus.start();
         // Request new information as soon as possible
         statusInformationRead();
-        //TODO: See if overloads the connection (maybe add a delay)
+        // TODO: See if this overloads the connection limits (maybe add a delay)
+        // The connection limit is 3000 packets/s
     } break;
     case JOB_INFORMATION_R:
         break;
