@@ -2,6 +2,7 @@
 #define GCODEINTERFACE_H
 
 #include <QObject>
+#include <QQueue>
 
 #include "gcode/gcodereader.h"
 #include "hseclient.h"
@@ -29,16 +30,25 @@ public:
     void setUserFrame(const double& x, const double& y, const double& z);
 
     // 3. execute gcode
-    void executeFile(QString filepath);
+    int executeFile(QString filepath);
 
     // execute a block
     void execute(gcode::Block block);
+    void executeNext();
+
+signals:
+    void finished();
+    void finishedLine();
 
 private slots:
     void handleStatusInformationRead(StatusInformation info);
+    void handleRobotNotRunning();
 
 private:
     HSEClient* m_client;
+    gcode::Reader m_reader;
+
+    QQueue<gcode::Block> m_blocks;
 
     // Keep an internal state on some parameters
     struct ClientState {
@@ -50,8 +60,8 @@ private:
         double E = 0;
         // Speed in mm/min
         double F = 0;
-        // Parameter
-        double P = 0;
+
+        double dX = 0, dY = 0, dZ = 0;
 
         bool running = false;
     };
@@ -65,10 +75,24 @@ private:
      * @param y position in mm
      * @param z position in mm
      * @param speed in mm/min
+     *
+     * @return The minimum time to wait for the command to finish in s
      */
-    void sendMove(const double x, const double y, const double z, const double speed);
+    double sendMove(const double x, const double y, const double z, const double speed);
+
+    /**
+     * @brief Send extrude speed command to robot
+     * @param speed in mm/min
+     */
+    void sendExtrusionSpeed(const double speed);
 
     std::array<double, 3> m_userBase;
+
+    QTimer m_lastCommandTimer;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Robot signals
+    void robotNotRunning();
 };
 
 } // namespace dx200
