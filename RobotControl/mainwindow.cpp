@@ -78,7 +78,7 @@ void MainWindow::initConnections()
 
 void MainWindow::requestStatus(dx200::RequestStatus status)
 {
-    updateRobotStatus(status.status == 0x00, status.status);
+    updateRobotStatus(status.status != 0x00, status.status);
 }
 
 void MainWindow::handleStatusInformation(dx200::StatusInformation info)

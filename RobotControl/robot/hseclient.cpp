@@ -18,6 +18,9 @@ HSEClient::HSEClient()
     connect(&m_timeoutStatus, &QTimer::timeout, this, &HSEClient::statusInformationRead);
     connect(&m_timeoutStatus, &QTimer::timeout, [&]() {
         qWarning() << tr("HSEClient timeout: Robot's station did not answer in time");
+        RequestStatus status;
+        status.status = -1;
+        emit requestStatus(status);
     });
     m_timeoutStatus.setInterval(500);
     m_timeoutStatus.start();
