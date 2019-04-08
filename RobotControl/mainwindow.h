@@ -30,9 +30,10 @@ private slots:
     void updateRobotStatus(bool error, int code = 0);
     void handleRobotCartesianPosition(dx200::Movement::Cartesian position);
 
+    void on_bSendPosition_clicked();
+
     void on_bSetPO_clicked();
     void on_bPrint_clicked();
-
     void on_bBrowseFile_clicked();
 
 private:
@@ -43,7 +44,7 @@ private:
     QLabel* m_lVRobotStatus        = nullptr;
     QProgressBar* m_ePrintProgress = nullptr;
 
-    dx200::HSEClient m_station;
+    dx200::HSEClient m_client;
     dx200::GCodeInterpreter m_interpreter;
     gcode::Reader m_reader;
 

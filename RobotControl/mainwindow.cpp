@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     initConnections();
 
-    m_interpreter.setClient(&m_station);
+    m_interpreter.setClient(&m_client);
 }
 
 MainWindow::~MainWindow()
@@ -45,13 +45,13 @@ MainWindow::~MainWindow()
 void MainWindow::initConnections()
 {
     // Request status response
-    connect(&m_station, &dx200::HSEClient::requestStatus,
+    connect(&m_client, &dx200::HSEClient::requestStatus,
             this, &MainWindow::requestStatus);
     // Status information response
-    connect(&m_station, &dx200::HSEClient::readStatusInformation,
+    connect(&m_client, &dx200::HSEClient::readStatusInformation,
             this, &MainWindow::handleStatusInformation);
     // Robot position response
-    connect(&m_station, &dx200::HSEClient::readPositionCartesian,
+    connect(&m_client, &dx200::HSEClient::readPositionCartesian,
             this, &MainWindow::handleRobotCartesianPosition);
 
     connect(&m_interpreter, &dx200::GCodeInterpreter::finishedLine, [&]() {
@@ -248,6 +248,36 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
     m_logWidget.close();
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::on_bSendPosition_clicked()
+{
+    using namespace dx200;
+
+    int X  = ui->spinAxis1->value();
+    int Y  = ui->spinAxis1->value();
+    int Z  = ui->spinAxis1->value();
+    int Tx = ui->spinAxis1->value();
+    int Ty = ui->spinAxis1->value();
+    int Tz = ui->spinAxis1->value();
+
+    Movement::Cartesian mvtData;
+    mvtData.robotNo        = 1;
+    mvtData.stationNo      = 0; // TODO: Should be 1
+    mvtData.classification = Movement::SpeedClassification::CARTESIAN_TRANSLATION;
+    mvtData.speed          = 1000; // 10cm/s
+    mvtData.coordinate     = 17;   // 17 = Robot coordinates
+
+    mvtData.x  = X;
+    mvtData.y  = Y;
+    mvtData.z  = Z;
+    mvtData.tx = Tx;
+    mvtData.ty = Ty;
+    mvtData.tz = Tz;
+    // The rest of the members are zero-initialized
+
+    // Send command to robot
+    m_client.moveCartesian(Movement::ABSOLUTE_CARTESIAN, mvtData);
 }
 
 void MainWindow::on_bSetPO_clicked()

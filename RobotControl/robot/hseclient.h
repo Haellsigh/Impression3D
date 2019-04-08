@@ -20,11 +20,10 @@ class HSEClient : public QObject {
 public:
     HSEClient();
 
-    void sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data = QByteArray());
-
     ///////////////////////////////////////////////////////////////////////////
     // List of possible requests
 public slots:
+
     /**
      * @brief Reads the status information data
      */
@@ -87,6 +86,9 @@ signals:
     void readPositionPulse(Movement::Pulse position);
 
     ///////////////////////////////////////////////////////////////////////////
+private:
+    void sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data = QByteArray());
+
 signals:
     void requestSent();
     void requestStatus(RequestStatus status);

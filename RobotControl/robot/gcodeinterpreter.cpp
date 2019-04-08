@@ -190,7 +190,7 @@ double GCodeInterpreter::sendMove(const double x, const double y, const double z
     double Z = z - m_userBase[2];
 
     // Rotation in degrees
-    double Tx = 180;
+    double Tx = -180;
     double Ty = 0;
     double Tz = 0;
 

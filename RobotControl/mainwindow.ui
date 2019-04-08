@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -342,6 +342,9 @@
                <property name="pageStep">
                 <number>10000</number>
                </property>
+               <property name="value">
+                <number>1800000</number>
+               </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -366,6 +369,9 @@
                </property>
                <property name="singleStep">
                 <number>100</number>
+               </property>
+               <property name="value">
+                <number>1800000</number>
                </property>
               </widget>
              </item>
