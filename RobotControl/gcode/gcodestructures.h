@@ -22,11 +22,8 @@ enum ParameterType {
 /**
  * @brief Represents a gcode block (line)
  *
- * A block is a list of fields.
- * It must have a command in order to be valid (Either Standard or RepRap).
- *
- * The member variable isValid is set to true when there is at least
- * one command.
+ * A block is one command and zero or more parameters.
+ * A block is valid if there is at least one command.
  */
 struct Block {
 private:
@@ -53,6 +50,10 @@ public:
     bool hasParameter(const ParameterType type) const
     {
         return parameters.contains(type);
+    }
+    bool hasParameters() const
+    {
+        return !parameters.isEmpty();
     }
 
     double getParameter(const ParameterType type) const

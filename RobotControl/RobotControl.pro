@@ -40,7 +40,8 @@ HEADERS += \
         robot/hseclient.h \
         robot/gcodeinterpreter.h \
         gcode/gcodestructures.h \
-        gcode/gcodereader.h
+        gcode/gcodereader.h \
+    log.h
 
 FORMS += \
         mainwindow.ui \
