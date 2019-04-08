@@ -2,7 +2,10 @@
 #include "ui_mainwindow.h"
 
 #include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QNetworkDatagram>
+#include <QSettings>
 
 #include "log.h"
 
@@ -11,6 +14,17 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    createLanguageMenu();
+    selectDefaultLanguage();
+
+    // Setup progress bar
+    m_ePrintProgress = new QProgressBar;
+    ui->statusbar->addPermanentWidget(m_ePrintProgress, 1);
+    m_ePrintProgress->setTextVisible(true);
+    m_ePrintProgress->setAlignment(Qt::AlignHCenter);
+    m_ePrintProgress->setFormat(tr("Print status: %p% (%v steps / %m)"));
+
+    // Add the robot status text in the status bar
     m_lVRobotStatus = new QLabel(this);
     m_lVRobotStatus->setMargin(5);
     ui->statusbar->addPermanentWidget(m_lVRobotStatus);
@@ -18,13 +32,9 @@ MainWindow::MainWindow(QWidget* parent)
 
     setupLogging();
 
-    createLanguageMenu();
-
     initConnections();
 
     m_interpreter.setClient(&m_station);
-
-    auto blocks = m_reader.decodeFile("test.gcode");
 }
 
 MainWindow::~MainWindow()
@@ -35,33 +45,21 @@ MainWindow::~MainWindow()
 void MainWindow::initConnections()
 {
     // Request status response
-    connect(&m_station, &dx200::HSEClient::requestStatus, this, &MainWindow::requestStatus);
-    connect(&m_station, &dx200::HSEClient::readStatusInformation, this, &MainWindow::handleStatusInformation);
-    //connect(&m_station, &dx200::HSEClient::)
+    connect(&m_station, &dx200::HSEClient::requestStatus,
+            this, &MainWindow::requestStatus);
+    // Status information response
+    connect(&m_station, &dx200::HSEClient::readStatusInformation,
+            this, &MainWindow::handleStatusInformation);
+    // Robot position response
+    connect(&m_station, &dx200::HSEClient::readPositionCartesian,
+            this, &MainWindow::handleRobotCartesianPosition);
 
-    connect(ui->radioCurPosPulse, &QRadioButton::clicked, [this]() {
-        slotCurrentPosSelected(1);
-    });
-    connect(ui->radioCurPosBaseCart, &QRadioButton::clicked, [this]() {
-        slotCurrentPosSelected(2);
-    });
-    connect(ui->radioCurPosUserCart, &QRadioButton::clicked, [this]() {
-        slotCurrentPosSelected(3);
-    });
-
-    connect(ui->radioManMovPulse, &QRadioButton::clicked, [this]() {
-        slotMovePosSelected(1);
-    });
-    connect(ui->radioManMovBaseCart, &QRadioButton::clicked, [this]() {
-        slotMovePosSelected(2);
-    });
-    connect(ui->radioManMovUserCart, &QRadioButton::clicked, [this]() {
-        slotMovePosSelected(3);
+    connect(&m_interpreter, &dx200::GCodeInterpreter::finishedLine, [&]() {
+        m_ePrintProgress->setValue(m_ePrintProgress->value() + 1);
     });
 
     // Connect spinAxisI to sliderAxisI
-    auto spinSignal = static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged);
-
+    auto spinSignal = qOverload<int>(&QSpinBox::valueChanged);
     connect(ui->spinAxis1, spinSignal, ui->sliderAxis1, &QSlider::setValue);
     connect(ui->spinAxis2, spinSignal, ui->sliderAxis2, &QSlider::setValue);
     connect(ui->spinAxis3, spinSignal, ui->sliderAxis3, &QSlider::setValue);
@@ -135,16 +133,6 @@ void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian positio
     ui->lVAxis6->setNum(position.tz);
 }
 
-void MainWindow::slotCurrentPosSelected(int posType)
-{
-    qDebug().noquote() << "Current selected position type:" << posType;
-}
-
-void MainWindow::slotMovePosSelected(int posType)
-{
-    qDebug().noquote() << "Movement selected position type:" << posType;
-}
-
 void MainWindow::changeEvent(QEvent* event)
 {
     if (event == nullptr)
@@ -200,6 +188,9 @@ void MainWindow::loadLanguage(const QString& rLanguage)
     switchTranslator(m_translator, QString("RobotControl_%1.qm").arg(rLanguage));
     switchTranslator(m_translatorQt, QString("qt_%1.qm").arg(rLanguage));
     ui->statusbar->showMessage(tr("Current language changed to %1").arg(languageName));
+
+    QSettings settings;
+    settings.setValue("language", rLanguage);
 }
 
 void MainWindow::createLanguageMenu()
@@ -208,9 +199,6 @@ void MainWindow::createLanguageMenu()
     langGroup->setExclusive(true);
 
     connect(langGroup, &QActionGroup::triggered, this, &MainWindow::slotLanguageChanged);
-
-    QString defaultLocale = QLocale::system().name();       // ex: "de_DE"
-    defaultLocale.truncate(defaultLocale.lastIndexOf('_')); // ex: "de"
 
     m_langPath = QApplication::applicationDirPath();
     m_langPath.append("/languages");
@@ -232,18 +220,24 @@ void MainWindow::createLanguageMenu()
 
         ui->menuLanguage->addAction(action);
         langGroup->addAction(action);
-
-        // Select system language as current
-        if (defaultLocale == locale) {
-            action->setChecked(true);
-        }
     }
+}
+
+void MainWindow::selectDefaultLanguage()
+{
+    QString defaultLocale = QLocale::system().name();       // ex: "de_DE"
+    defaultLocale.truncate(defaultLocale.lastIndexOf('_')); // ex: "de"
+
+    QSettings settings;
+    QString lastLanguage = settings.value("language", defaultLocale).toString();
+
+    loadLanguage(lastLanguage);
 }
 
 void MainWindow::setupLogging()
 {
     if (!m_actionOpenLog)
-        m_actionOpenLog = new QAction("Logs", ui->menubar);
+        m_actionOpenLog = new QAction(tr("Logs"), ui->menubar);
     connect(m_actionOpenLog, &QAction::triggered, &m_logWidget, &LogWidget::show);
     ui->menubar->addAction(m_actionOpenLog);
 
@@ -256,9 +250,39 @@ void MainWindow::closeEvent(QCloseEvent* event)
     QMainWindow::closeEvent(event);
 }
 
-void MainWindow::on_bSetUserFrame_clicked()
+void MainWindow::on_bSetPO_clicked()
 {
     double ox = 0, oy = 0, oz = 0;
 
-    //m_interpreter.setUserFrame()
+    ox = ui->lVAxis1->text().toDouble();
+    oy = ui->lVAxis2->text().toDouble();
+    oz = ui->lVAxis3->text().toDouble();
+
+    m_interpreter.setUserFrame(ox, oy, oz);
+
+    ui->lVPOX->setText(QStringLiteral("x: %1 µm").arg(ox));
+    ui->lVPOY->setText(QStringLiteral("y: %1 µm").arg(oy));
+    ui->lVPOZ->setText(QStringLiteral("z: %1 µm").arg(oz));
+
+    ui->containerStep1->setStyleSheet("QWidget#containerStep1 {\n  background-color: rgba(0, 255, 0, 30);\n}");
+}
+
+void MainWindow::on_bPrint_clicked()
+{
+    if (!ui->eFile->text().isEmpty()) {
+        int totalSteps = m_interpreter.executeFile(ui->eFile->text());
+        m_ePrintProgress->setMaximum(totalSteps - 1);
+        m_ePrintProgress->reset();
+    }
+}
+
+void MainWindow::on_bBrowseFile_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select GCode file"), QDir::currentPath(), tr("GCode Files (*.g *.gc *.gcode)"));
+
+    if (!fileName.isEmpty()) {
+        ui->eFile->setText(fileName);
+
+        ui->containerStep2->setStyleSheet("QWidget#containerStep2 {\n  background-color: rgba(0, 255, 0, 30);\n}");
+    }
 }
