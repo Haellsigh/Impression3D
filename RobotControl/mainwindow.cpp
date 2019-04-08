@@ -4,7 +4,7 @@
 #include <QDir>
 #include <QNetworkDatagram>
 
-#include <QMessageBox>
+#include "log.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -107,21 +107,22 @@ void MainWindow::handleStatusInformation(dx200::StatusInformation info)
 
 void MainWindow::updateRobotStatus(bool error, int code)
 {
-    QString robotStatus;
+    QString errorMessage;
 
     if (error) {
         if (code == 0) {
-            robotStatus = tr("Error");
+            errorMessage = tr("Error");
         } else {
-            robotStatus = tr("Error: code %1").arg(code);
+            errorMessage = tr("Error: code %1").arg(code);
         }
         m_lVRobotStatus->setStyleSheet("background-color: rgb(200, 0, 0);");
     } else {
-        robotStatus = tr("No error");
+        errorMessage = tr("No errors");
         m_lVRobotStatus->setStyleSheet("background-color: rgb(0, 200, 0);");
     }
 
-    m_lVRobotStatus->setText(robotStatus);
+    m_lVRobotStatus->setText(errorMessage);
+    qWarning() << errorMessage;
 }
 
 void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian position)
@@ -217,7 +218,7 @@ void MainWindow::createLanguageMenu()
     QStringList fileNames = dir.entryList(QStringList("RobotControl_*.qm"));
 
     for (int i = 0; i < fileNames.size(); i++) {
-        qInfo().noquote() << tr("Loading language") << fileNames.at(i);
+        qDebug() << tr("Loading language %1").arg(fileNames.at(i));
         QString locale;
         locale = fileNames.at(i);
         locale.truncate(locale.lastIndexOf('.'));

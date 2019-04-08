@@ -2,7 +2,7 @@
 
 #include <QFile>
 
-#include <QDebug>
+#include "log.h"
 
 namespace gcode {
 
@@ -43,11 +43,10 @@ QVector<Block> Reader::decodeFile(QString filepath)
     }
 
     // Display some statistics
-    qDebug().noquote() << "G-Code fields statistics:";
+    qDebug() << "G-Code fields statistics:";
     auto it = m_cmdCounts.begin();
     while (it != m_cmdCounts.end()) {
-        qDebug().noquote() << it.key()
-                           << ":" << 100. * it.value() / m_totals << "%";
+        qDebug() << it.key() << ":" << 100. * it.value() / m_totals << "%";
         it++;
     }
 
@@ -59,7 +58,7 @@ QStringList Reader::readFile(QString filepath)
     QFile file(filepath);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning().noquote() << tr("Can't open file %1").arg(filepath);
+        qWarning() << tr("Can't open file %1").arg(filepath);
         return QStringList();
     }
 
@@ -122,10 +121,9 @@ Block Reader::parseFields(QStringList fields, int iLine)
             // If the first field in the line isn't a command
             if (iField == 0) {
                 if (!block.isValid) {
-                    qWarning().noquote()
-                        << "GCode error at line"
-                        << iLine
-                        << ": block not starting with a command (G or M)";
+                    qWarning() << "GCode error at line"
+                               << iLine
+                               << ": block not starting with a command (G or M)";
                     return Block();
                 }
             }

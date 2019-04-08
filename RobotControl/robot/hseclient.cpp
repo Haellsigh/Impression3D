@@ -2,7 +2,7 @@
 
 #include <QNetworkDatagram>
 
-#include <QMessageBox>
+#include "log.h"
 
 namespace dx200 {
 
@@ -227,7 +227,6 @@ void HSEClient::readPendingDatagrams()
 
         /// Stop here if there's an error
         if (status.status != 0x00) {
-            qWarning().noquote() << "HSEClient" << tr("error") << "!";
             return;
         }
 
@@ -314,6 +313,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         break;
     }
 
+    // Remove the processed request
     m_requests.remove(cmd);
 }
 

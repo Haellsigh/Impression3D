@@ -1,5 +1,9 @@
 #include "gcodeinterpreter.h"
 
+#include <cmath>
+
+#include "log.h"
+
 namespace dx200 {
 
 void GCodeInterpreter::setClient(HSEClient* client)
