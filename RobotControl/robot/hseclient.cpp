@@ -117,17 +117,6 @@ void HSEClient::cancelErrors()
     sendCommand(ALARM_RESET, 0x02, 0x01, 0x10, data);
 }
 
-void HSEClient::hlock(bool lock)
-{
-    // 1: HLock on, 2: HLock off
-    uint8_t toLock = lock ? 1 : 2;
-
-    QByteArray data(4, 0);
-    data[0] = toLock;
-
-    sendCommand(HOLD_OR_SERVO_ONOFF, 0x03, 0x01, 0x10, data);
-}
-
 void HSEClient::hold(bool hold)
 {
     // 1: Hold on, 2: Hold off
@@ -137,6 +126,28 @@ void HSEClient::hold(bool hold)
     data[0] = toHold;
 
     sendCommand(HOLD_OR_SERVO_ONOFF, 0x01, 0x01, 0x10, data);
+}
+
+void HSEClient::servo(bool on)
+{
+    // 1: Servo on, 2: Servo off
+    uint8_t toServo = on ? 1 : 2;
+
+    QByteArray data(4, 0);
+    data[0] = toServo;
+
+    sendCommand(HOLD_OR_SERVO_ONOFF, 0x02, 0x01, 0x10, data);
+}
+
+void HSEClient::hlock(bool lock)
+{
+    // 1: HLock on, 2: HLock off
+    uint8_t toLock = lock ? 1 : 2;
+
+    QByteArray data(4, 0);
+    data[0] = toLock;
+
+    sendCommand(HOLD_OR_SERVO_ONOFF, 0x03, 0x01, 0x10, data);
 }
 
 void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
@@ -181,7 +192,7 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
     data32bit[i++] = movement.stationAxisPosition.at(4);
     data32bit[i++] = movement.stationAxisPosition.at(5);
 
-    // Pack the 32bit data array into an array of 8bit data
+    // Pack the array of 32bit data into an array of 8bit data
     QByteArray data(n * 4, Qt::Initialization::Uninitialized);
     for (uint32_t i = 0; i < n; i++) {
         data[i * 4]     = getByte<0>(data32bit[i]);

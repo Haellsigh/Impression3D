@@ -41,16 +41,22 @@ public slots:
     void cancelErrors();
 
     /**
-     * @brief Activate or deactivate HLock on the robot
-     * @param lock Set to false to deactivate HLock on the robot
-     */
-    void hlock(bool lock = true);
-
-    /**
      * @brief Hold or unhold the Servo
      * @param hold Set to false to unhold the Servo
      */
     void hold(bool hold = true);
+
+    /**
+     * @brief Activate or deactivate the Servo
+     * @param on Set to true to activate the servo
+     */
+    void servo(bool on = true);
+
+    /**
+     * @brief Activate or deactivate HLock on the robot
+     * @param lock Set to false to deactivate HLock on the robot
+     */
+    void hlock(bool lock = true);
 
     /**
      * @brief Send a move instruction to the robot in cartesian coordinates
