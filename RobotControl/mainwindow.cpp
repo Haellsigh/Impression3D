@@ -316,3 +316,8 @@ void MainWindow::on_bBrowseFile_clicked()
         ui->containerStep2->setStyleSheet("QWidget#containerStep2 {\n  background-color: rgba(0, 255, 0, 30);\n}");
     }
 }
+
+void MainWindow::on_bStop_clicked()
+{
+    m_interpreter.stopExecution();
+}

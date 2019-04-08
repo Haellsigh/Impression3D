@@ -36,6 +36,8 @@ private slots:
     void on_bPrint_clicked();
     void on_bBrowseFile_clicked();
 
+    void on_bStop_clicked();
+
 private:
     void initConnections();
     Ui::MainWindow* ui;

@@ -36,6 +36,8 @@ public:
     void execute(gcode::Block block);
     void executeNext();
 
+    void stopExecution();
+
 signals:
     void finished();
     void finishedLine();

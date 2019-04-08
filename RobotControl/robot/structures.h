@@ -8,6 +8,8 @@
 #include <QByteArray>
 #include <QString>
 
+#include "log.h"
+
 namespace dx200 {
 
 template <uint8_t byte, class T>
@@ -84,7 +86,6 @@ namespace Movement {
         int32_t toolNo                          = 0;
     };
 
-    //TODO: Verifier l'initialisation des std::array & des enum
     struct Cartesian : public BaseType {
         int32_t coordinate                         = 0;
         uint32_t expandedType                      = 0;

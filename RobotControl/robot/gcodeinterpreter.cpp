@@ -81,6 +81,7 @@ void GCodeInterpreter::execute(gcode::Block block)
 
         // G28: Move to origin
         else if (commandData == 28) {
+            // Move to the axis' 0 or to the value
             double x = 0, y = 0, z = 0, speed = 10000;
             if (block.hasParameter(gcode::X))
                 x = m_state.X;
@@ -91,7 +92,7 @@ void GCodeInterpreter::execute(gcode::Block block)
             if (block.hasParameter(gcode::Feedrate))
                 speed = m_state.F;
 
-            sendMove(x, y, z, speed);
+            time = sendMove(x, y, z, speed);
         }
         // G92: Set current position to zero
         else if (commandData == 92) {
@@ -145,8 +146,6 @@ void GCodeInterpreter::execute(gcode::Block block)
 
     // Time to wait before executing the next command
     m_lastCommandTimer.start(time * 1000);
-    qInfo() << tr("Execution time: %1s").arg(time);
-
     // Compute extrusion speed from extrusion length
     if (block.hasParameter(gcode::ExtrudeLength) && time != 0) {
         // speed = length / time (in mm/min)
@@ -164,6 +163,11 @@ void GCodeInterpreter::executeNext()
     } else {
         emit finished();
     }
+}
+
+void GCodeInterpreter::stopExecution()
+{
+    m_lastCommandTimer.stop();
 }
 
 void GCodeInterpreter::handleStatusInformationRead(StatusInformation info)
@@ -213,9 +217,7 @@ double GCodeInterpreter::sendMove(const double x, const double y, const double z
     m_client->moveCartesian(Movement::ABSOLUTE_CARTESIAN, mvtData);
 
     // Length of this action in time: time = DeltaPos/speed
-    return sqrt(m_state.dX * m_state.dX
-                + m_state.dY * m_state.dY
-                + m_state.dZ * m_state.dZ)
+    return 60. * sqrt(m_state.dX * m_state.dX + m_state.dY * m_state.dY + m_state.dZ * m_state.dZ)
            / speed;
 }
 
@@ -229,18 +231,24 @@ void GCodeInterpreter::ClientState::update(gcode::Block block)
 {
     if (block.hasParameter(gcode::X)) {
         double newX = block.getParameter(gcode::X);
-        dX          = X - newX;
+        dX          = newX - X;
         X           = newX;
+    } else {
+        dX = 0;
     }
     if (block.hasParameter(gcode::Y)) {
         double newY = block.getParameter(gcode::Y);
-        dY          = Y - newY;
+        dY          = newY - Y;
         Y           = newY;
+    } else {
+        dY = 0;
     }
     if (block.hasParameter(gcode::Z)) {
         double newZ = block.getParameter(gcode::Z);
-        dZ          = Z - newZ;
+        dZ          = newZ - Z;
         Z           = newZ;
+    } else {
+        dZ = 0;
     }
     if (block.hasParameter(gcode::ExtrudeLength)) {
         E = block.getParameter(gcode::ExtrudeLength);
