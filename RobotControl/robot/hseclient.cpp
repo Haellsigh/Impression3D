@@ -14,14 +14,14 @@ HSEClient::HSEClient()
     m_socket.bind(m_ip, m_port);
     connect(&m_socket, &QUdpSocket::readyRead, this, &HSEClient::readPendingDatagrams);
 
-    // Periodic requests
-    connect(&m_timeoutStatus, &QTimer::timeout, this, &HSEClient::statusInformationRead);
     connect(&m_timeoutStatus, &QTimer::timeout, [&]() {
-        qWarning() << tr("HSEClient timeout: Robot's station did not answer in time");
+        qWarning() << tr("HSEClient timeout: Robot's station did not answer in time (500ms)");
         RequestStatus status;
         status.status = -1;
         emit requestStatus(status);
     });
+    // Periodic requests
+    connect(&m_timeoutStatus, &QTimer::timeout, this, &HSEClient::statusInformationRead);
     m_timeoutStatus.setInterval(500);
     m_timeoutStatus.start();
 }
@@ -58,7 +58,7 @@ void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attrib
     framedData[i++] = 0x00;
 
     // Save the current request
-    m_requests[m_requestCount] = STATUS_INFORMATION_R;
+    m_requests[m_requestCount] = command_id;
     // Request ID
     framedData[i++] = m_requestCount++; // Increment by one for each request
 
@@ -81,6 +81,7 @@ void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attrib
     // Command ID
     framedData[i++] = getByte<0>(command_id);
     framedData[i++] = getByte<1>(command_id);
+    qDebug() << "Command id decoded: 117=" << toUInt16(framedData, 24);
 
     // Instance
     framedData[i++] = getByte<0>(instance);
@@ -214,6 +215,12 @@ void HSEClient::movePulse(Movement::Type type, Movement::Pulse movement)
 {
 }
 
+void HSEClient::robotPositionRead()
+{
+    qDebug() << "Send robotPositionRead";
+    sendCommand(ROBOT_POSITION_DATA_R, 101, 16, GET_ALL_ATTRIBUTES);
+}
+
 void HSEClient::readPendingDatagrams()
 {
     while (m_socket.hasPendingDatagrams()) {
@@ -261,6 +268,8 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
 {
     Command cmd = m_requests[request_id];
 
+    qInfo() << "Received data for cmd=" << static_cast<uint16_t>(cmd);
+
     switch (cmd) {
     case ALARM_DATA_R:
         break;
@@ -271,11 +280,12 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         info.data1 = data[0];
         info.data2 = data[4];
         emit readStatusInformation(info);
+        //qInfo() << tr("Ping time: %1 ms").arg(m_timeoutStatus.interval() - m_timeoutStatus.remainingTime());
 
         // Reset the timeout
         m_timeoutStatus.start();
         // Request new information as soon as possible
-        statusInformationRead();
+        //statusInformationRead();
         // TODO: See if this overloads the connection limits (maybe add a delay)
         // The connection limit is 3000 packets/s
     } break;
@@ -284,6 +294,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
     case AXIS_CONFIGURATION_INFORMATION_R:
         break;
     case ROBOT_POSITION_DATA_R: {
+        qInfo() << "Got ROBOT_POSITION_DATA_R";
         int i = 0; // Index of data type
         // Pulse values
         if (toUInt32(data, 4 * (i - 1)) == 0) {

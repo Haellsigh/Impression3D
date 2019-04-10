@@ -66,7 +66,6 @@ void LogWidget::log(QString message, QtMsgType type)
 
     ui->logText->setCurrentCharFormat(newCharFormat);
     ui->logText->appendPlainText(QString("[%1] %2").arg(QTime::currentTime().toString("hh:mm:ss.zzz")).arg(message));
-    ui->logText->verticalScrollBar()->move(ui->logText->verticalScrollBar()->maximum(), 0);
 }
 
 void LogWidget::handleMessagesImpl(QtMsgType type, const QMessageLogContext& context, const QString& msg)

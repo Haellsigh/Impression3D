@@ -78,6 +78,11 @@ public slots:
      */
     //void readAxisConfigurationInformation(uint8_t controlGroup);
 
+    /**
+     * @brief Read the position of the robot in cartesian coordinates
+     */
+    void robotPositionRead();
+
     ///////////////////////////////////////////////////////////////////////////
     // List of answers to requests
 signals:
@@ -115,7 +120,7 @@ private:
      *
      * Cela permettra de savoir lorsqu'on recoit une réponse ou elle doit aller.
      */
-    QHash<uint8_t, Command> m_requests;
+    QMap<uint8_t, Command> m_requests;
     uint8_t m_requestCount = 0;
 
     QTimer m_timeoutStatus;

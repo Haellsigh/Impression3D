@@ -50,6 +50,8 @@ private:
     dx200::GCodeInterpreter m_interpreter;
     gcode::Reader m_reader;
 
+    QTimer m_timeoutPositionRead;
+
     ///////////////////////////////////////////////////////////////////////////
     /// Traductions
 protected:

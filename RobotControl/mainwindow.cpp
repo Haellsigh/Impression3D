@@ -34,6 +34,10 @@ MainWindow::MainWindow(QWidget* parent)
 
     initConnections();
 
+    m_timeoutPositionRead.setSingleShot(false);
+    m_timeoutPositionRead.setInterval(500);
+    m_timeoutPositionRead.start();
+
     m_interpreter.setClient(&m_client);
 }
 
@@ -56,6 +60,12 @@ void MainWindow::initConnections()
 
     connect(&m_interpreter, &dx200::GCodeInterpreter::finishedLine, [&]() {
         m_ePrintProgress->setValue(m_ePrintProgress->value() + 1);
+    });
+
+    // Request position data on timeout
+    connect(&m_timeoutPositionRead, &QTimer::timeout, [&]() {
+        qWarning() << tr("MainWindow timeout: Didn't receive robot position in time (500ms)");
+        m_client.robotPositionRead();
     });
 
     // Connect spinAxisI to sliderAxisI
@@ -120,7 +130,6 @@ void MainWindow::updateRobotStatus(bool error, int code)
     }
 
     m_lVRobotStatus->setText(errorMessage);
-    qWarning() << errorMessage;
 }
 
 void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian position)
@@ -131,6 +140,9 @@ void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian positio
     ui->lVAxis4->setNum(position.tx);
     ui->lVAxis5->setNum(position.ty);
     ui->lVAxis6->setNum(position.tz);
+
+    // Request another read
+    m_client.robotPositionRead();
 }
 
 void MainWindow::changeEvent(QEvent* event)
