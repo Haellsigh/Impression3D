@@ -27,7 +27,6 @@ private slots:
     void requestStatus(dx200::RequestStatus status);
 
     void handleStatusInformation(dx200::StatusInformation info);
-    void updateRobotStatus(bool error, int code = 0);
     void handleRobotCartesianPosition(dx200::Movement::Cartesian position);
 
     void on_bSendPosition_clicked();
@@ -37,6 +36,10 @@ private slots:
     void on_bBrowseFile_clicked();
 
     void on_bStop_clicked();
+
+    void on_bServoToggle_clicked();
+
+    void on_pushButton_toggled(bool checked);
 
 private:
     void initConnections();
@@ -49,6 +52,8 @@ private:
     dx200::HSEClient m_client;
     dx200::GCodeInterpreter m_interpreter;
     gcode::Reader m_reader;
+
+    bool m_servoOn = false;
 
     QTimer m_timeoutPositionRead;
 

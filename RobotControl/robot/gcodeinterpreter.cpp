@@ -28,6 +28,7 @@ void GCodeInterpreter::setUserFrame(const double& x, const double& y, const doub
 
 int GCodeInterpreter::executeFile(QString filepath)
 {
+    m_stopped = false;
     m_blocks.clear();
     auto blocks = m_reader.decodeFile(filepath);
 
@@ -92,6 +93,8 @@ void GCodeInterpreter::execute(gcode::Block block)
             if (block.hasParameter(gcode::Feedrate))
                 speed = m_state.F;
 
+            qDebug() << "G28: x=" << x << "; y=" << y << "; z=" << z << "; speed=" << speed;
+
             time = sendMove(x, y, z, speed);
         }
         // G92: Set current position to zero
@@ -144,6 +147,8 @@ void GCodeInterpreter::execute(gcode::Block block)
         break;
     }
 
+    emit finishedLine();
+
     // Time to wait before executing the next command
     m_lastCommandTimer.start(time * 1000);
     // Compute extrusion speed from extrusion length
@@ -157,9 +162,8 @@ void GCodeInterpreter::execute(gcode::Block block)
 
 void GCodeInterpreter::executeNext()
 {
-    if (!m_blocks.isEmpty()) {
+    if (!m_blocks.isEmpty() && !m_stopped) {
         execute(m_blocks.dequeue());
-        emit finishedLine();
     } else {
         emit finished();
     }
@@ -167,7 +171,7 @@ void GCodeInterpreter::executeNext()
 
 void GCodeInterpreter::stopExecution()
 {
-    m_lastCommandTimer.stop();
+    m_stopped = true;
 }
 
 void GCodeInterpreter::handleStatusInformationRead(StatusInformation info)
@@ -189,12 +193,12 @@ double GCodeInterpreter::sendMove(const double x, const double y, const double z
 {
     // Apply the user base transform
     // Position in mm
-    double X = x - m_userBase[0];
-    double Y = y - m_userBase[1];
-    double Z = z - m_userBase[2];
+    double X = x + m_userBase[0];
+    double Y = y + m_userBase[1];
+    double Z = z + m_userBase[2];
 
     // Rotation in degrees
-    double Tx = -180;
+    double Tx = 180;
     double Ty = 0;
     double Tz = 0;
 
@@ -211,6 +215,14 @@ double GCodeInterpreter::sendMove(const double x, const double y, const double z
     mvtData.tx = Tx * 10000; // 0.0001 degree to degree
     mvtData.ty = Ty * 10000;
     mvtData.tz = Tz * 10000;
+
+    qDebug() << "x:" << mvtData.x
+             << "; y: " << mvtData.y
+             << "; z: " << mvtData.z
+             << "; tx: " << mvtData.tx
+             << "; ty: " << mvtData.ty
+             << "; tz: " << mvtData.tz;
+
     // The rest of the members are zero-initialized
 
     // Send command to robot

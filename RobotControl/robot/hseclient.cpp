@@ -28,9 +28,9 @@ HSEClient::HSEClient()
 
 void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attribut, uint8_t service, QByteArray data)
 {
-    uint16_t dataLength = data.length();
+    uint16_t dataLength = data.size();
     QByteArray framedData;
-    framedData.resize(32 + dataLength);
+    framedData.resize(32);
 
     int i = 0;
 
@@ -81,7 +81,6 @@ void HSEClient::sendCommand(Command command_id, int16_t instance, uint8_t attrib
     // Command ID
     framedData[i++] = getByte<0>(command_id);
     framedData[i++] = getByte<1>(command_id);
-    qDebug() << "Command id decoded: 117=" << toUInt16(framedData, 24);
 
     // Instance
     framedData[i++] = getByte<0>(instance);
@@ -137,10 +136,16 @@ void HSEClient::hold(bool hold)
 
 void HSEClient::servo(bool on)
 {
+    auto boolToString = [](const bool value) {
+        return value ? QString("true") : QString("false");
+    };
+
+    qDebug() << tr("HSEClient command: servo %1").arg(boolToString(on));
     // 1: Servo on, 2: Servo off
     uint8_t toServo = on ? 1 : 2;
 
-    QByteArray data(4, 0);
+    QByteArray data;
+    data.fill(0, 4);
     data[0] = toServo;
 
     sendCommand(HOLD_OR_SERVO_ONOFF, 0x02, 0x01, 0x10, data);
@@ -178,7 +183,6 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
 
     // i = 11
     data32bit[i++] = 0x00;
-    data32bit[i++] = 0x00;
 
     // i = 13
     data32bit[i++] = movement.type;
@@ -186,6 +190,7 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
     data32bit[i++] = movement.toolNo;
     data32bit[i++] = movement.userCoordinateNo;
 
+    data32bit[i++] = 0x00;
     // i = 17
     data32bit[i++] = movement.baseAxisPosition.at(0);
     data32bit[i++] = movement.baseAxisPosition.at(1);
@@ -200,7 +205,7 @@ void HSEClient::moveCartesian(Movement::Type type, Movement::Cartesian movement)
     data32bit[i++] = movement.stationAxisPosition.at(5);
 
     // Pack the array of 32bit data into an array of 8bit data
-    QByteArray data(n * 4, Qt::Initialization::Uninitialized);
+    QByteArray data(n * 4, 0);
     for (uint32_t i = 0; i < n; i++) {
         data[i * 4]     = getByte<0>(data32bit[i]);
         data[i * 4 + 1] = getByte<1>(data32bit[i]);
@@ -217,8 +222,7 @@ void HSEClient::movePulse(Movement::Type type, Movement::Pulse movement)
 
 void HSEClient::robotPositionRead()
 {
-    qDebug() << "Send robotPositionRead";
-    sendCommand(ROBOT_POSITION_DATA_R, 101, 16, GET_ALL_ATTRIBUTES);
+    sendCommand(ROBOT_POSITION_DATA_R, 101, 0, GET_ALL_ATTRIBUTES);
 }
 
 void HSEClient::readPendingDatagrams()
@@ -268,8 +272,6 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
 {
     Command cmd = m_requests[request_id];
 
-    qInfo() << "Received data for cmd=" << static_cast<uint16_t>(cmd);
-
     switch (cmd) {
     case ALARM_DATA_R:
         break;
@@ -285,7 +287,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
         // Reset the timeout
         m_timeoutStatus.start();
         // Request new information as soon as possible
-        //statusInformationRead();
+        statusInformationRead();
         // TODO: See if this overloads the connection limits (maybe add a delay)
         // The connection limit is 3000 packets/s
     } break;
@@ -294,8 +296,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
     case AXIS_CONFIGURATION_INFORMATION_R:
         break;
     case ROBOT_POSITION_DATA_R: {
-        qInfo() << "Got ROBOT_POSITION_DATA_R";
-        int i = 0; // Index of data type
+        int i = 1; // Index of data type
         // Pulse values
         if (toUInt32(data, 4 * (i - 1)) == 0) {
             Movement::Pulse pos;
@@ -308,7 +309,7 @@ void HSEClient::processReceivedData(const uint8_t request_id, const QByteArray d
             }
 
             emit readPositionPulse(pos);
-        } else if (toUInt32(data, 0) == 16) {
+        } else if (toUInt32(data, 4 * (i - 1)) == 16) {
             Movement::Cartesian pos;
 
             i                    = 2;

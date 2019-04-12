@@ -27,6 +27,12 @@ public:
     void setClient(HSEClient* client);
 
     // 2. set frame
+    /**
+     * @brief Set the user frame
+     * @param x position in mm
+     * @param y position in mm
+     * @param z position in mm
+     */
     void setUserFrame(const double& x, const double& y, const double& z);
 
     // 3. execute gcode
@@ -49,6 +55,7 @@ private slots:
 private:
     HSEClient* m_client;
     gcode::Reader m_reader;
+    bool m_stopped = false;
 
     QQueue<gcode::Block> m_blocks;
 

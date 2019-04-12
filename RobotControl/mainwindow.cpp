@@ -26,9 +26,11 @@ MainWindow::MainWindow(QWidget* parent)
 
     // Add the robot status text in the status bar
     m_lVRobotStatus = new QLabel(this);
+    m_lVRobotStatus->setMinimumWidth(180);
     m_lVRobotStatus->setMargin(5);
     ui->statusbar->addPermanentWidget(m_lVRobotStatus);
-    updateRobotStatus(false);
+    // No error
+    requestStatus(dx200::RequestStatus());
 
     setupLogging();
 
@@ -88,7 +90,23 @@ void MainWindow::initConnections()
 
 void MainWindow::requestStatus(dx200::RequestStatus status)
 {
-    updateRobotStatus(status.status != 0x00, status.status);
+    QString errorMessage;
+
+    if (status.status != 0x00) {
+        if (status.status == 0) {
+            errorMessage = tr("Error");
+        } else {
+            uint32_t addedStatus = ((uint16_t)status.status1 << 16)
+                                   + ((uint16_t)status.status2 << 0);
+            errorMessage = tr("Error: code %1, added code: %2").arg(status.status, 0, 16).arg(addedStatus, 0, 16);
+        }
+        m_lVRobotStatus->setStyleSheet("background-color: rgb(200, 0, 0);");
+    } else {
+        errorMessage = tr("No errors");
+        m_lVRobotStatus->setStyleSheet("background-color: rgb(0, 200, 0);");
+    }
+
+    m_lVRobotStatus->setText(errorMessage);
 }
 
 void MainWindow::handleStatusInformation(dx200::StatusInformation info)
@@ -96,6 +114,8 @@ void MainWindow::handleStatusInformation(dx200::StatusInformation info)
     auto boolToString = [](bool value) {
         return value ? QString("true") : QString("false");
     };
+
+    m_servoOn = info.Servo();
 
     ui->lVServo->setText(boolToString(info.Servo()));
     ui->lVAlarming->setText(boolToString(info.Alarming()));
@@ -113,25 +133,6 @@ void MainWindow::handleStatusInformation(dx200::StatusInformation info)
     ui->lVTeach->setText(boolToString(info.Teach()));
 }
 
-void MainWindow::updateRobotStatus(bool error, int code)
-{
-    QString errorMessage;
-
-    if (error) {
-        if (code == 0) {
-            errorMessage = tr("Error");
-        } else {
-            errorMessage = tr("Error: code %1").arg(code);
-        }
-        m_lVRobotStatus->setStyleSheet("background-color: rgb(200, 0, 0);");
-    } else {
-        errorMessage = tr("No errors");
-        m_lVRobotStatus->setStyleSheet("background-color: rgb(0, 200, 0);");
-    }
-
-    m_lVRobotStatus->setText(errorMessage);
-}
-
 void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian position)
 {
     ui->lVAxis1->setNum(position.x);
@@ -143,6 +144,7 @@ void MainWindow::handleRobotCartesianPosition(dx200::Movement::Cartesian positio
 
     // Request another read
     m_client.robotPositionRead();
+    m_timeoutPositionRead.start();
 }
 
 void MainWindow::changeEvent(QEvent* event)
@@ -267,11 +269,11 @@ void MainWindow::on_bSendPosition_clicked()
     using namespace dx200;
 
     int X  = ui->spinAxis1->value();
-    int Y  = ui->spinAxis1->value();
-    int Z  = ui->spinAxis1->value();
-    int Tx = ui->spinAxis1->value();
-    int Ty = ui->spinAxis1->value();
-    int Tz = ui->spinAxis1->value();
+    int Y  = ui->spinAxis2->value();
+    int Z  = ui->spinAxis3->value();
+    int Tx = ui->spinAxis4->value();
+    int Ty = ui->spinAxis5->value();
+    int Tz = ui->spinAxis6->value();
 
     Movement::Cartesian mvtData;
     mvtData.robotNo        = 1;
@@ -279,6 +281,13 @@ void MainWindow::on_bSendPosition_clicked()
     mvtData.classification = Movement::SpeedClassification::CARTESIAN_TRANSLATION;
     mvtData.speed          = 1000; // 10cm/s
     mvtData.coordinate     = 17;   // 17 = Robot coordinates
+
+    qDebug() << "x: " << X;
+    qDebug() << "y: " << Y;
+    qDebug() << "z: " << Z;
+    qDebug() << "tx: " << Tx;
+    qDebug() << "ty: " << Ty;
+    qDebug() << "tz: " << Tz;
 
     mvtData.x  = X;
     mvtData.y  = Y;
@@ -289,22 +298,22 @@ void MainWindow::on_bSendPosition_clicked()
     // The rest of the members are zero-initialized
 
     // Send command to robot
-    m_client.moveCartesian(Movement::ABSOLUTE_CARTESIAN, mvtData);
+    m_client.moveCartesian(Movement::ABSOLUTE_JOINT, mvtData);
 }
 
 void MainWindow::on_bSetPO_clicked()
 {
     double ox = 0, oy = 0, oz = 0;
 
-    ox = ui->lVAxis1->text().toDouble();
-    oy = ui->lVAxis2->text().toDouble();
-    oz = ui->lVAxis3->text().toDouble();
+    ox = ui->lVAxis1->text().toDouble() / 1000.;
+    oy = ui->lVAxis2->text().toDouble() / 1000.;
+    oz = ui->lVAxis3->text().toDouble() / 1000.;
 
     m_interpreter.setUserFrame(ox, oy, oz);
 
-    ui->lVPOX->setText(QStringLiteral("x: %1 µm").arg(ox));
-    ui->lVPOY->setText(QStringLiteral("y: %1 µm").arg(oy));
-    ui->lVPOZ->setText(QStringLiteral("z: %1 µm").arg(oz));
+    ui->lVPOX->setText(QStringLiteral("x: %1 mm").arg(ox));
+    ui->lVPOY->setText(QStringLiteral("y: %1 mm").arg(oy));
+    ui->lVPOZ->setText(QStringLiteral("z: %1 mm").arg(oz));
 
     ui->containerStep1->setStyleSheet("QWidget#containerStep1 {\n  background-color: rgba(0, 255, 0, 30);\n}");
 }
@@ -332,4 +341,15 @@ void MainWindow::on_bBrowseFile_clicked()
 void MainWindow::on_bStop_clicked()
 {
     m_interpreter.stopExecution();
+}
+
+void MainWindow::on_bServoToggle_clicked()
+{
+    m_servoOn = !m_servoOn;
+    m_client.servo(m_servoOn);
+}
+
+void MainWindow::on_pushButton_toggled(bool checked)
+{
+    m_client
 }
